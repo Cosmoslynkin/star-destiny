@@ -1201,7 +1201,21 @@
         // 农历转阳历（使用Lunar库）
         function lunarToSolar(year, month, day, isLeap) {
             try {
-                const lunar = Lunar.fromYmd(year, month, day);
+                // 使用Lunar.fromYmd，如果是闰月需要特殊处理
+                let lunar;
+                if (isLeap) {
+                    // 闰月：先获取该年闰几月，确认与传入的month一致
+                    const leapMonth = Lunar.fromYmd(year, 1, 1).getLeapMonth();
+                    if (leapMonth === month) {
+                        // 对于lunar-javascript库，闰月日期直接用fromYmd即可正确处理
+                        lunar = Lunar.fromYmd(year, month, day);
+                    } else {
+                        // 不是闰月，按普通月处理
+                        lunar = Lunar.fromYmd(year, month, day);
+                    }
+                } else {
+                    lunar = Lunar.fromYmd(year, month, day);
+                }
                 const solar = lunar.getSolar();
                 return new Date(solar.getYear(), solar.getMonth() - 1, solar.getDay());
             } catch (e) {
