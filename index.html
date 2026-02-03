@@ -1431,6 +1431,14 @@
             // 《宿曜经》值日星宿算法
             starIndex = getStarByLunarDate(lunarYear, lunarMonth, lunarDay, isLeap);
             
+            // 调试信息：显示计算参数
+            console.log('星宿计算参数:', {
+                mode: currentMode,
+                lunarYear, lunarMonth, lunarDay, isLeap,
+                dayOfYear: getLunarDayOfYear(lunarYear, lunarMonth, lunarDay, isLeap),
+                starIndex
+            });
+            
             // 显示加载
             document.getElementById('inputSection').style.display = 'none';
             document.getElementById('loading').classList.add('show');
