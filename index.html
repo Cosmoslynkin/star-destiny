@@ -1377,9 +1377,17 @@
         
         // 基于农历日期获取值日星宿（《宿曜经》对照表查询）
         function getStarByLunarDate(lunarYear, lunarMonth, lunarDay, isLeap = false) {
+            // 处理闰月：闰月使用与前一个月相同的星宿序列
+            // 例如：闰六月 → 使用六月的星宿表
+            let lookupMonth = lunarMonth;
+            if (isLeap) {
+                // 闰月沿用该月的星宿序列
+                lookupMonth = lunarMonth;
+            }
+            
             // 使用对照表直接查询
-            // lunarMonth: 1-12, lunarDay: 1-30
-            const monthIndex = lunarMonth - 1;
+            // lookupMonth: 1-12, lunarDay: 1-30
+            const monthIndex = lookupMonth - 1;
             const dayIndex = lunarDay - 1;
             
             // 获取对照表中的星宿索引
@@ -1390,8 +1398,8 @@
             
             // 调试信息
             console.log('宿曜经查询:', {
-                lunarMonth, lunarDay, 
-                monthIndex, dayIndex,
+                lunarYear, lunarMonth, lunarDay, isLeap,
+                lookupMonth, monthIndex, dayIndex,
                 starIndex,
                 starName: starData[starIndex]?.name
             });
