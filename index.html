@@ -621,35 +621,9 @@
         // 当前输入模式
         let currentMode = 'solar';
         
-        // 二十八星宿数据
+        // 二十八星宿数据 - 《宿曜经》顺序
+        // 《文殊师利菩萨及诸仙所说吉凶时日善恶宿曜经》专用顺序
         const starData = [
-            {
-                name: '角木蛟',
-                pinyin: 'Jiǎo Mù Jiāo',
-                animal: '东方苍龙第一宿',
-                icon: '🐉',
-                meaning: '角宿为东方苍龙之首，象征新的开始和进取精神。角宿主春生之气，代表万物复苏、生机勃勃。',
-                personality: '你具有开拓精神，勇于创新，喜欢挑战新事物。性格直率，有领导才能，善于开创局面。为人正直，有正义感。',
-                fortune: { career: '⭐⭐⭐⭐⭐', wealth: '⭐⭐⭐', love: '⭐⭐⭐⭐' }
-            },
-            {
-                name: '亢金龙',
-                pinyin: 'Kàng Jīn Lóng',
-                animal: '东方苍龙第二宿',
-                icon: '🐲',
-                meaning: '亢宿象征龙的咽喉，主威严和权势。代表刚强、坚毅的品质，有护佑之力。',
-                personality: '你性格刚强，意志坚定，不轻易放弃。有责任感，重情义，对朋友忠诚。做事有魄力，但有时会过于固执。',
-                fortune: { career: '⭐⭐⭐⭐', wealth: '⭐⭐⭐⭐', love: '⭐⭐⭐' }
-            },
-            {
-                name: '氐土貉',
-                pinyin: 'Dī Tǔ Hé',
-                animal: '东方苍龙第三宿',
-                icon: '🦡',
-                meaning: '氐宿为龙胸，象征根基和稳重。主安定、踏实，有守成之能。',
-                personality: '你性格稳重踏实，做事有条理。重视家庭，有理财头脑。为人诚实可靠，是值得信赖的朋友。',
-                fortune: { career: '⭐⭐⭐', wealth: '⭐⭐⭐⭐⭐', love: '⭐⭐⭐⭐' }
-            },
             {
                 name: '房日兔',
                 pinyin: 'Fáng Rì Tù',
@@ -874,6 +848,33 @@
                 meaning: '轸宿象征归宿和圆满。主圆满、成就，有善始善终之德。',
                 personality: '你做事有始有终，追求完美结局。有责任感，会坚持到底。为人踏实，值得信赖。',
                 fortune: { career: '⭐⭐⭐⭐', wealth: '⭐⭐⭐⭐', love: '⭐⭐⭐⭐' }
+            },
+            {
+                name: '角木蛟',
+                pinyin: 'Jiǎo Mù Jiāo',
+                animal: '东方苍龙第一宿',
+                icon: '🐉',
+                meaning: '角宿为东方苍龙之首，象征新的开始和进取精神。角宿主春生之气，代表万物复苏、生机勃勃。',
+                personality: '你具有开拓精神，勇于创新，喜欢挑战新事物。性格直率，有领导才能，善于开创局面。为人正直，有正义感。',
+                fortune: { career: '⭐⭐⭐⭐⭐', wealth: '⭐⭐⭐', love: '⭐⭐⭐⭐' }
+            },
+            {
+                name: '亢金龙',
+                pinyin: 'Kàng Jīn Lóng',
+                animal: '东方苍龙第二宿',
+                icon: '🐲',
+                meaning: '亢宿象征龙的咽喉，主威严和权势。代表刚强、坚毅的品质，有护佑之力。',
+                personality: '你性格刚强，意志坚定，不轻易放弃。有责任感，重情义，对朋友忠诚。做事有魄力，但有时会过于固执。',
+                fortune: { career: '⭐⭐⭐⭐', wealth: '⭐⭐⭐⭐', love: '⭐⭐⭐' }
+            },
+            {
+                name: '氐土貉',
+                pinyin: 'Dī Tǔ Hé',
+                animal: '东方苍龙第三宿',
+                icon: '🦡',
+                meaning: '氐宿为龙胸，象征根基和稳重。主安定、踏实，有守成之能。',
+                personality: '你性格稳重踏实，做事有条理。重视家庭，有理财头脑。为人诚实可靠，是值得信赖的朋友。',
+                fortune: { career: '⭐⭐⭐', wealth: '⭐⭐⭐⭐⭐', love: '⭐⭐⭐⭐' }
             }
         ];
         
@@ -1248,6 +1249,68 @@
             return days;
         }
         
+        // 精确的公历转农历函数
+        function solarToLunar(solarDate) {
+            const year = solarDate.getFullYear();
+            const month = solarDate.getMonth() + 1;
+            const day = solarDate.getDate();
+            
+            // 1900年春节是阳历1900年1月31日
+            let lunarYear = 1900;
+            let lunarMonth = 1;
+            let lunarDay = 1;
+            let isLeap = false;
+            
+            // 计算从1900年1月31日到目标日期的天数
+            const baseDate = new Date(1900, 0, 31);
+            let targetDate = new Date(year, month - 1, day);
+            let diffDays = Math.floor((targetDate - baseDate) / (86400000));
+            
+            // 逐年减去天数，确定农历年份
+            while (diffDays >= getLunarYearDays(lunarYear)) {
+                diffDays -= getLunarYearDays(lunarYear);
+                lunarYear++;
+            }
+            
+            // 确定农历月份和日期
+            const data = lunarData[lunarYear];
+            const leapMonth = data ? ((data >> 16) & 0x0f) : 0;
+            
+            lunarMonth = 1;
+            while (lunarMonth <= 12) {
+                // 普通月天数
+                const normalDays = getLunarDaysInMonth(lunarYear, lunarMonth, false);
+                
+                // 检查是否在普通月内
+                if (diffDays < normalDays) {
+                    lunarDay = diffDays + 1;
+                    isLeap = false;
+                    break;
+                }
+                diffDays -= normalDays;
+                
+                // 检查闰月
+                if (leapMonth === lunarMonth) {
+                    const leapDays = getLunarDaysInMonth(lunarYear, lunarMonth, true);
+                    if (diffDays < leapDays) {
+                        lunarDay = diffDays + 1;
+                        isLeap = true;
+                        break;
+                    }
+                    diffDays -= leapDays;
+                }
+                
+                lunarMonth++;
+            }
+            
+            return {
+                year: lunarYear,
+                month: lunarMonth,
+                day: lunarDay,
+                isLeap: isLeap
+            };
+        }
+        
         // 计算星宿（《宿曜经》算法）
         function calculateStar() {
             let starIndex;
@@ -1265,45 +1328,12 @@
                 const date = new Date(dateInput);
                 displayDate = date;
                 
-                // 阳历转农历（简化计算）
-                // 以1900年春节为基准
-                const baseDate = new Date(1900, 0, 31);
-                const diffDays = Math.floor((date - baseDate) / (1000 * 60 * 60 * 24));
-                
-                // 推算农历年月日（简化版）
-                let year = 1900;
-                let remainingDays = diffDays;
-                
-                while (remainingDays >= getLunarYearDays(year)) {
-                    remainingDays -= getLunarYearDays(year);
-                    year++;
-                }
-                
-                lunarYear = year;
-                let month = 1;
-                const data = lunarData[lunarYear];
-                const leapMonth = data ? ((data >> 16) & 0x0f) : 0;
-                
-                while (month <= 12) {
-                    const monthDays = getLunarDaysInMonth(lunarYear, month, false);
-                    if (remainingDays < monthDays) break;
-                    remainingDays -= monthDays;
-                    
-                    // 检查闰月
-                    if (leapMonth === month) {
-                        const leapDays = getLunarDaysInMonth(lunarYear, month, true);
-                        if (remainingDays < leapDays) {
-                            isLeap = true;
-                            break;
-                        }
-                        remainingDays -= leapDays;
-                    }
-                    month++;
-                }
-                
-                lunarMonth = month;
-                lunarDay = remainingDays + 1;
-                isLeap = false;
+                // 使用精确的公历转农历算法
+                const lunar = solarToLunar(date);
+                lunarYear = lunar.year;
+                lunarMonth = lunar.month;
+                lunarDay = lunar.day;
+                isLeap = lunar.isLeap;
                 
             } else {
                 lunarYear = parseInt(document.getElementById('lunarYear').value);
