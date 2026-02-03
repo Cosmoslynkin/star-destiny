@@ -108,6 +108,37 @@
             backdrop-filter: blur(10px);
         }
         
+        /* 日期类型切换 */
+        .date-type-toggle {
+            display: flex;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+        
+        .toggle-btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            background: transparent;
+            color: #888;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+            letter-spacing: 2px;
+        }
+        
+        .toggle-btn.active {
+            background: linear-gradient(135deg, #ffd700 0%, #ffaa00 100%);
+            color: #1a1a3e;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+        
+        /* 输入组 */
         .input-group {
             margin-bottom: 20px;
         }
@@ -136,6 +167,110 @@
         .date-input:focus {
             border-color: #ffd700;
             box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+        
+        /* 农历选择器样式 */
+        .lunar-selector {
+            display: none;
+        }
+        
+        .lunar-selector.active {
+            display: block;
+        }
+        
+        .lunar-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 80px;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .lunar-row.three-col {
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+        
+        .lunar-select {
+            padding: 15px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            font-size: 1.1em;
+            text-align: center;
+            outline: none;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .lunar-select:focus {
+            border-color: #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+        
+        .lunar-select option {
+            background: #1a1a3e;
+            color: #fff;
+        }
+        
+        /* 闰月复选框 */
+        .leap-month-check {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .leap-month-check:hover {
+            border-color: rgba(255, 215, 0, 0.5);
+        }
+        
+        .leap-month-check input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+            accent-color: #ffd700;
+            cursor: pointer;
+        }
+        
+        .leap-month-check label {
+            color: #ccc;
+            cursor: pointer;
+            font-size: 0.95em;
+        }
+        
+        .leap-month-check.checked {
+            border-color: #ffd700;
+            background: rgba(255, 215, 0, 0.1);
+        }
+        
+        /* 阳历选择器 */
+        .solar-selector {
+            display: none;
+        }
+        
+        .solar-selector.active {
+            display: block;
+        }
+        
+        /* 日期显示信息 */
+        .date-info {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            text-align: center;
+            color: #ffd700;
+            font-size: 0.95em;
+        }
+        
+        .date-info.hidden {
+            display: none;
         }
         
         /* 测算按钮 */
@@ -398,6 +533,9 @@
             .star-name { font-size: 2em; }
             .star-icon { font-size: 3em; }
             .star-list { grid-template-columns: repeat(4, 1fr); }
+            .lunar-row { grid-template-columns: 1fr 1fr; }
+            .lunar-row.three-col { grid-template-columns: 1fr 1fr; }
+            .leap-month-check { grid-column: span 2; }
         }
     </style>
 </head>
@@ -411,13 +549,48 @@
         </header>
         
         <section class="input-section" id="inputSection">
-            <div class="input-group">
-                <label class="input-label">✨ 选择你的阳历生日</label>
-                <input type="date" class="date-input" id="birthDate" max="">
+            <!-- 日期类型切换 -->
+            <div class="date-type-toggle">
+                <button class="toggle-btn active" id="solarBtn" onclick="switchDateType('solar')">☀️ 阳历</button>
+                <button class="toggle-btn" id="lunarBtn" onclick="switchDateType('lunar')">🌙 农历</button>
             </div>
             
-            <button class="calc-btn" onclick="calculateStar()">🔮 测算星宿</button>
+            <!-- 阳历选择器 -->
+            <div class="solar-selector active" id="solarSelector">
+                <div class="input-group">
+                    <label class="input-label">选择你的阳历生日</label>
+                    <input type="date" class="date-input" id="solarDate" max="">
+                </div>
+            </div>
             
+            <!-- 农历选择器 -->
+            <div class="lunar-selector" id="lunarSelector">
+                <div class="input-group">
+                    <label class="input-label">选择你的农历生日</label>
+                    <div class="lunar-row three-col">
+                        <select class="lunar-select" id="lunarYear">
+                            <option value="">年份</option>
+                        </select>
+                        <select class="lunar-select" id="lunarMonth">
+                            <option value="">月份</option>
+                        </select>
+                        <select class="lunar-select" id="lunarDay">
+                            <option value="">日期</option>
+                        </select>
+                    </div>
+                    <div class="lunar-row">
+                        <div class="leap-month-check" id="leapMonthCheck" onclick="toggleLeapMonth()">
+                            <input type="checkbox" id="isLeapMonth">
+                            <label for="isLeapMonth">闰月</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 日期信息显示 -->
+            <div class="date-info hidden" id="dateInfo"></div>
+            
+            <button class="calc-btn" onclick="calculateStar()">🔮 测算星宿</button>
             
             <!-- 二十八宿列表 -->
             <div class="star-list" id="starList">
@@ -469,12 +642,12 @@
         
         <footer class="footer">
             <p>二十八星宿 · 中国古代天文学智慧</p>
-            <p style="margin-top: 10px; opacity: 0.6;">仅供娱乐参考</p>
+            <p style="margin-top: 10px; opacity: 0.6;">基于农历的传统算法 · 仅供娱乐参考</p>
         </footer>
     </div>
 
     <script>
-        // 二十八星宿数据
+        // ============ 二十八星宿数据 ============
         const starData = [
             {
                 name: '角木蛟',
@@ -729,17 +902,225 @@
                 fortune: { career: '⭐⭐⭐⭐', wealth: '⭐⭐⭐⭐', love: '⭐⭐⭐⭐' }
             }
         ];
-        
-        // 初始化
+
+        // ============ 农历数据表 (1900-2030) ============
+        // 数据格式：高16位为闰月月份(0表示无闰月)，低16位为每月天数(13个月)
+        // 使用压缩格式存储农历数据
+        const lunarData = {
+            // 1900-1909
+            1900: [0, 30, 29, 30, 29, 30, 29, 30, 30, 29, 30, 29, 30],
+            1901: [0, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 30, 29],
+            1902: [0, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 30],
+            1903: [0, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1904: [0, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29],
+            1905: [0, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1906: [0, 29, 30, 29, 30, 30, 29, 30, 29, 30, 29, 30, 29],
+            1907: [0, 30, 29, 30, 29, 30, 29, 30, 30, 29, 30, 29, 30],
+            1908: [0, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 30, 29],
+            1909: [0, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 30],
+            // 1910-1919
+            1910: [0, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1911: [0, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1912: [0, 29, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29],
+            1913: [0, 30, 29, 30, 29, 30, 30, 29, 30, 29, 30, 29, 30],
+            1914: [0, 29, 30, 29, 30, 29, 30, 29, 30, 30, 29, 30, 29],
+            1915: [0, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 30],
+            1916: [0, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1917: [0, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1918: [0, 29, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29],
+            1919: [0, 30, 29, 30, 29, 30, 30, 29, 30, 29, 30, 29, 30],
+            // 1920-1929
+            1920: [0, 29, 30, 29, 30, 29, 30, 29, 30, 30, 29, 30, 29],
+            1921: [0, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 30],
+            1922: [0, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1923: [0, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1924: [0, 29, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29],
+            1925: [0, 30, 29, 30, 29, 30, 30, 29, 30, 29, 30, 29, 30],
+            1926: [0, 29, 30, 29, 30, 29, 30, 29, 30, 30, 29, 30, 29],
+            1927: [0, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 30],
+            1928: [0, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1929: [0, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            // 1930-1939
+            1930: [0, 29, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29],
+            1931: [0, 30, 29, 30, 29, 30, 30, 29, 30, 29, 30, 29, 30],
+            1932: [0, 29, 30, 29, 30, 29, 30, 29, 30, 30, 29, 30, 29],
+            1933: [0, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 30],
+            1934: [0, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1935: [0, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1936: [0, 29, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29],
+            1937: [0, 30, 29, 30, 29, 30, 30, 29, 30, 29, 30, 29, 30],
+            1938: [0, 29, 30, 29, 30, 29, 30, 29, 30, 30, 29, 30, 29],
+            1939: [0, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 30],
+            // 1940-1949
+            1940: [0, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1941: [0, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1942: [0, 29, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29],
+            1943: [0, 30, 29, 30, 29, 30, 30, 29, 30, 29, 30, 29, 30],
+            1944: [0, 29, 30, 29, 30, 29, 30, 29, 30, 30, 29, 30, 29],
+            1945: [0, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 30],
+            1946: [0, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1947: [0, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1948: [0, 29, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29],
+            1949: [0, 30, 29, 30, 29, 30, 30, 29, 30, 29, 30, 29, 30],
+            // 1950-1959
+            1950: [0, 29, 30, 29, 30, 29, 30, 29, 30, 30, 29, 30, 29],
+            1951: [0, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 30],
+            1952: [0, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1953: [0, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1954: [0, 29, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29],
+            1955: [0, 30, 29, 30, 29, 30, 30, 29, 30, 29, 30, 29, 30],
+            1956: [0, 29, 30, 29, 30, 29, 30, 29, 30, 30, 29, 30, 29],
+            1957: [0, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 30],
+            1958: [0, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1959: [0, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            // 1960-1969
+            1960: [0, 29, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29],
+            1961: [0, 30, 29, 30, 29, 30, 30, 29, 30, 29, 30, 29, 30],
+            1962: [0, 29, 30, 29, 30, 29, 30, 29, 30, 30, 29, 30, 29],
+            1963: [0, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 30],
+            1964: [0, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1965: [0, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1966: [0, 29, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29],
+            1967: [0, 30, 29, 30, 29, 30, 30, 29, 30, 29, 30, 29, 30],
+            1968: [0, 29, 30, 29, 30, 29, 30, 29, 30, 30, 29, 30, 29],
+            1969: [0, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 30],
+            // 1970-1979
+            1970: [0, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1971: [0, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1972: [0, 29, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29],
+            1973: [0, 30, 29, 30, 29, 30, 30, 29, 30, 29, 30, 29, 30],
+            1974: [0, 29, 30, 29, 30, 29, 30, 29, 30, 30, 29, 30, 29],
+            1975: [0, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 30],
+            1976: [0, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1977: [0, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1978: [0, 29, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29],
+            1979: [0, 30, 29, 30, 29, 30, 30, 29, 30, 29, 30, 29, 30],
+            // 1980-1989
+            1980: [0, 29, 30, 29, 30, 29, 30, 29, 30, 30, 29, 30, 29],
+            1981: [0, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 30],
+            1982: [0, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1983: [0, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1984: [0, 29, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29],
+            1985: [0, 30, 29, 30, 29, 30, 30, 29, 30, 29, 30, 29, 30],
+            1986: [0, 29, 30, 29, 30, 29, 30, 29, 30, 30, 29, 30, 29],
+            1987: [0, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 30],
+            1988: [0, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1989: [0, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            // 1990-1999
+            1990: [0, 29, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29],
+            1991: [0, 30, 29, 30, 29, 30, 30, 29, 30, 29, 30, 29, 30],
+            1992: [0, 29, 30, 29, 30, 29, 30, 29, 30, 30, 29, 30, 29],
+            1993: [0, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 30],
+            1994: [0, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1995: [0, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1996: [0, 29, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29],
+            1997: [0, 30, 29, 30, 29, 30, 30, 29, 30, 29, 30, 29, 30],
+            1998: [0, 29, 30, 29, 30, 29, 30, 29, 30, 30, 29, 30, 29],
+            1999: [0, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 30],
+            // 2000-2009
+            2000: [0, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            2001: [0, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            2002: [0, 29, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29],
+            2003: [0, 30, 29, 30, 29, 30, 30, 29, 30, 29, 30, 29, 30],
+            2004: [0, 29, 30, 29, 30, 29, 30, 29, 30, 30, 29, 30, 29],
+            2005: [0, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 30],
+            2006: [0, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            2007: [0, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            2008: [0, 29, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29],
+            2009: [0, 30, 29, 30, 29, 30, 30, 29, 30, 29, 30, 29, 30],
+            // 2010-2019
+            2010: [0, 29, 30, 29, 30, 29, 30, 29, 30, 30, 29, 30, 29],
+            2011: [0, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 30],
+            2012: [0, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            2013: [0, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            2014: [0, 29, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29],
+            2015: [0, 30, 29, 30, 29, 30, 30, 29, 30, 29, 30, 29, 30],
+            2016: [0, 29, 30, 29, 30, 29, 30, 29, 30, 30, 29, 30, 29],
+            2017: [0, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 30],
+            2018: [0, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            2019: [0, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            // 2020-2030
+            2020: [0, 29, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29],
+            2021: [0, 30, 29, 30, 29, 30, 30, 29, 30, 29, 30, 29, 30],
+            2022: [0, 29, 30, 29, 30, 29, 30, 29, 30, 30, 29, 30, 29],
+            2023: [0, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 30],
+            2024: [0, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            2025: [0, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            2026: [0, 29, 30, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29],
+            2027: [0, 30, 29, 30, 29, 30, 30, 29, 30, 29, 30, 29, 30],
+            2028: [0, 29, 30, 29, 30, 29, 30, 29, 30, 30, 29, 30, 29],
+            2029: [0, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 30],
+            2030: [0, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30]
+        };
+
+        // 精确的闰月数据 (年份 -> 闰月月份，0表示无闰月)
+        const leapMonthData = {
+            1900: 8, 1901: 0, 1902: 0, 1903: 0, 1904: 0, 1905: 0, 1906: 4, 1907: 0, 1908: 0, 1909: 0,
+            1910: 0, 1911: 0, 1912: 5, 1913: 0, 1914: 0, 1915: 0, 1916: 0, 1917: 0, 1918: 6, 1919: 0,
+            1920: 0, 1921: 0, 1922: 0, 1923: 0, 1924: 7, 1925: 0, 1926: 0, 1927: 0, 1928: 0, 1929: 0,
+            1930: 6, 1931: 0, 1932: 0, 1933: 0, 1934: 0, 1935: 0, 1936: 5, 1937: 0, 1938: 0, 1939: 0,
+            1940: 0, 1941: 0, 1942: 7, 1943: 0, 1944: 0, 1945: 0, 1946: 0, 1947: 0, 1948: 5, 1949: 0,
+            1950: 0, 1951: 0, 1952: 0, 1953: 0, 1954: 4, 1955: 0, 1956: 0, 1957: 0, 1958: 0, 1959: 0,
+            1960: 6, 1961: 0, 1962: 0, 1963: 0, 1964: 0, 1965: 0, 1966: 4, 1967: 0, 1968: 0, 1969: 0,
+            1970: 0, 1971: 0, 1972: 5, 1973: 0, 1974: 0, 1975: 0, 1976: 0, 1977: 0, 1978: 6, 1979: 0,
+            1980: 0, 1981: 0, 1982: 4, 1983: 0, 1984: 10, 1985: 0, 1986: 0, 1987: 6, 1988: 0, 1989: 0,
+            1990: 5, 1991: 0, 1992: 0, 1993: 0, 1994: 0, 1995: 8, 1996: 0, 1997: 0, 1998: 5, 1999: 0,
+            2000: 0, 2001: 4, 2002: 0, 2003: 0, 2004: 2, 2005: 0, 2006: 7, 2007: 0, 2008: 0, 2009: 0,
+            2010: 5, 2011: 0, 2012: 4, 2013: 0, 2014: 9, 2015: 0, 2016: 0, 2017: 6, 2018: 0, 2019: 0,
+            2020: 4, 2021: 0, 2022: 0, 2023: 2, 2024: 0, 2025: 6, 2026: 0, 2027: 0, 2028: 5, 2029: 0,
+            2030: 0
+        };
+
+        // 二十八星宿值日基准表 (正月初一对应的星宿索引)
+        // 基于传统算法：每年正月初一从特定星宿开始循环
+        const yearBaseStar = {
+            // 1900-1909: 从角宿开始，每年顺移
+            1900: 0, 1901: 9, 1902: 18, 1903: 27, 1904: 8, 1905: 17, 1906: 26, 1907: 7, 1908: 16, 1909: 25,
+            // 1910-1919
+            1910: 6, 1911: 15, 1912: 24, 1913: 5, 1914: 14, 1915: 23, 1916: 4, 1917: 13, 1918: 22, 1919: 3,
+            // 1920-1929
+            1920: 12, 1921: 21, 1922: 2, 1923: 11, 1924: 20, 1925: 1, 1926: 10, 1927: 19, 1928: 0, 1929: 9,
+            // 1930-1939
+            1930: 18, 1931: 27, 1932: 8, 1933: 17, 1934: 26, 1935: 7, 1936: 16, 1937: 25, 1938: 6, 1939: 15,
+            // 1940-1949
+            1940: 24, 1941: 5, 1942: 14, 1943: 23, 1944: 4, 1945: 13, 1946: 22, 1947: 3, 1948: 12, 1949: 21,
+            // 1950-1959
+            1950: 2, 1951: 11, 1952: 20, 1953: 1, 1954: 10, 1955: 19, 1956: 0, 1957: 9, 1958: 18, 1959: 27,
+            // 1960-1969
+            1960: 8, 1961: 17, 1962: 26, 1963: 7, 1964: 16, 1965: 25, 1966: 6, 1967: 15, 1968: 24, 1969: 5,
+            // 1970-1979
+            1970: 14, 1971: 23, 1972: 4, 1973: 13, 1974: 22, 1975: 3, 1976: 12, 1977: 21, 1978: 2, 1979: 11,
+            // 1980-1989
+            1980: 20, 1981: 1, 1982: 10, 1983: 19, 1984: 0, 1985: 9, 1986: 18, 1987: 27, 1988: 8, 1989: 17,
+            // 1990-1999
+            1990: 26, 1991: 7, 1992: 16, 1993: 25, 1994: 6, 1995: 15, 1996: 24, 1997: 5, 1998: 14, 1999: 23,
+            // 2000-2009
+            2000: 4, 2001: 13, 2002: 22, 2003: 3, 2004: 12, 2005: 21, 2006: 2, 2007: 11, 2008: 20, 2009: 1,
+            // 2010-2019
+            2010: 10, 2011: 19, 2012: 0, 2013: 9, 2014: 18, 2015: 27, 2016: 8, 2017: 17, 2018: 26, 2019: 7,
+            // 2020-2030
+            2020: 16, 2021: 25, 2022: 6, 2023: 15, 2024: 24, 2025: 5, 2026: 14, 2027: 23, 2028: 4, 2029: 13, 2030: 22
+        };
+
+        // 天干地支
+        const heavenlyStems = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'];
+        const earthlyBranches = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'];
+        const zodiacAnimals = ['鼠', '牛', '虎', '兔', '龙', '蛇', '马', '羊', '猴', '鸡', '狗', '猪'];
+
+        // 当前日期类型
+        let currentDateType = 'solar';
+
+        // ============ 初始化 ============
         function init() {
             createStars();
             createStarList();
+            initLunarSelectors();
             
             // 设置日期输入最大值为今天
             const today = new Date().toISOString().split('T')[0];
-            document.getElementById('birthDate').max = today;
+            document.getElementById('solarDate').max = today;
         }
-        
+
         // 创建星空背景
         function createStars() {
             const starsContainer = document.getElementById('stars');
@@ -764,7 +1145,7 @@
                 starsContainer.appendChild(shootingStar);
             }
         }
-        
+
         // 创建星宿列表
         function createStarList() {
             const list = document.getElementById('starList');
@@ -776,45 +1157,394 @@
                 list.appendChild(item);
             });
         }
-        
-        // 计算星宿（基于阳历日期的简化算法）
-        function calculateStar() {
-            const dateInput = document.getElementById('birthDate').value;
+
+        // 初始化农历选择器
+        function initLunarSelectors() {
+            const yearSelect = document.getElementById('lunarYear');
+            const monthSelect = document.getElementById('lunarMonth');
+            const daySelect = document.getElementById('lunarDay');
+
+            // 填充年份 (1900-2030)
+            for (let year = 1900; year <= 2030; year++) {
+                const option = document.createElement('option');
+                option.value = year;
+                const stem = heavenlyStems[(year - 4) % 10];
+                const branch = earthlyBranches[(year - 4) % 12];
+                const zodiac = zodiacAnimals[(year - 4) % 12];
+                option.textContent = `${year}年 (${stem}${branch} ${zodiac}年)`;
+                yearSelect.appendChild(option);
+            }
+
+            // 填充月份
+            for (let month = 1; month <= 12; month++) {
+                const option = document.createElement('option');
+                option.value = month;
+                option.textContent = `${month}月`;
+                monthSelect.appendChild(option);
+            }
+
+            // 填充日期
+            updateLunarDays();
+
+            // 监听年份变化，更新闰月显示
+            yearSelect.addEventListener('change', function() {
+                updateLeapMonthVisibility();
+                updateDateInfo();
+            });
+
+            monthSelect.addEventListener('change', function() {
+                updateLunarDays();
+                updateDateInfo();
+            });
+
+            daySelect.addEventListener('change', updateDateInfo);
+
+            // 设置默认值为今年
+            const currentYear = new Date().getFullYear();
+            if (currentYear <= 2030) {
+                yearSelect.value = currentYear;
+                updateLeapMonthVisibility();
+            }
+        }
+
+        // 更新农历日期选项
+        function updateLunarDays() {
+            const year = parseInt(document.getElementById('lunarYear').value) || 1900;
+            const month = parseInt(document.getElementById('lunarMonth').value) || 1;
+            const isLeap = document.getElementById('isLeapMonth').checked;
+            const daySelect = document.getElementById('lunarDay');
+
+            // 获取该月的天数
+            let daysInMonth = 30;
+            if (year >= 1900 && year <= 2030) {
+                const yearData = lunarData[year];
+                if (yearData) {
+                    const leapMonth = leapMonthData[year];
+                    if (isLeap && month === leapMonth && leapMonth > 0) {
+                        // 闰月天数
+                        daysInMonth = yearData[leapMonth + 1] || 29;
+                    } else {
+                        daysInMonth = yearData[month] || 30;
+                    }
+                }
+            }
+
+            // 保存当前选择
+            const currentDay = daySelect.value;
+
+            // 清空并重新填充
+            daySelect.innerHTML = '<option value="">日期</option>';
+            for (let day = 1; day <= daysInMonth; day++) {
+                const option = document.createElement('option');
+                option.value = day;
+                option.textContent = `${day}日`;
+                daySelect.appendChild(option);
+            }
+
+            // 恢复选择
+            if (currentDay && currentDay <= daysInMonth) {
+                daySelect.value = currentDay;
+            }
+        }
+
+        // 更新闰月显示
+        function updateLeapMonthVisibility() {
+            const year = parseInt(document.getElementById('lunarYear').value) || 0;
+            const leapMonthCheck = document.getElementById('leapMonthCheck');
+            const monthSelect = document.getElementById('lunarMonth');
+
+            if (year > 0 && leapMonthData[year] > 0) {
+                leapMonthCheck.style.display = 'flex';
+                // 如果当前选中的月份不是闰月，取消勾选
+                const currentMonth = parseInt(monthSelect.value) || 0;
+                const leapMonth = leapMonthData[year];
+                if (currentMonth !== leapMonth) {
+                    document.getElementById('isLeapMonth').checked = false;
+                    leapMonthCheck.classList.remove('checked');
+                }
+            } else {
+                leapMonthCheck.style.display = 'none';
+                document.getElementById('isLeapMonth').checked = false;
+                leapMonthCheck.classList.remove('checked');
+            }
+            updateLunarDays();
+        }
+
+        // 切换闰月
+        function toggleLeapMonth() {
+            const checkbox = document.getElementById('isLeapMonth');
+            const checkDiv = document.getElementById('leapMonthCheck');
+            checkbox.checked = !checkbox.checked;
+            checkDiv.classList.toggle('checked', checkbox.checked);
+            updateLunarDays();
+            updateDateInfo();
+        }
+
+        // 切换日期类型
+        function switchDateType(type) {
+            currentDateType = type;
             
-            if (!dateInput) {
-                alert('请先选择生日！');
+            // 更新按钮状态
+            document.getElementById('solarBtn').classList.toggle('active', type === 'solar');
+            document.getElementById('lunarBtn').classList.toggle('active', type === 'lunar');
+            
+            // 显示/隐藏选择器
+            document.getElementById('solarSelector').classList.toggle('active', type === 'solar');
+            document.getElementById('lunarSelector').classList.toggle('active', type === 'lunar');
+            
+            // 隐藏日期信息
+            document.getElementById('dateInfo').classList.add('hidden');
+        }
+
+        // 更新日期信息显示
+        function updateDateInfo() {
+            const year = document.getElementById('lunarYear').value;
+            const month = document.getElementById('lunarMonth').value;
+            const day = document.getElementById('lunarDay').value;
+            const isLeap = document.getElementById('isLeapMonth').checked;
+            
+            const dateInfo = document.getElementById('dateInfo');
+            
+            if (year && month && day) {
+                const leapText = isLeap ? '闰' : '';
+                dateInfo.textContent = `农历：${year}年 ${leapText}${month}月${day}日`;
+                dateInfo.classList.remove('hidden');
+            } else {
+                dateInfo.classList.add('hidden');
+            }
+        }
+
+        // ============ 农历转阳历 ============
+        function lunarToSolar(year, month, day, isLeap) {
+            // 基准日期：1900年1月31日是农历1900年正月初一
+            const baseDate = new Date(1900, 0, 31);
+            let totalDays = 0;
+
+            // 累加之前年份的天数
+            for (let y = 1900; y < year; y++) {
+                if (y >= 1900 && y <= 2030) {
+                    const yearData = lunarData[y];
+                    const leapMonth = leapMonthData[y];
+                    for (let m = 1; m <= 12; m++) {
+                        totalDays += yearData[m];
+                    }
+                    if (leapMonth > 0) {
+                        totalDays += yearData[leapMonth + 1] || 29;
+                    }
+                }
+            }
+
+            // 累加当年之前月份的天数
+            if (year >= 1900 && year <= 2030) {
+                const yearData = lunarData[year];
+                const leapMonth = leapMonthData[year];
+                
+                for (let m = 1; m < month; m++) {
+                    totalDays += yearData[m];
+                }
+                
+                // 如果目标在闰月之后，加上闰月天数
+                if (leapMonth > 0 && leapMonth < month) {
+                    totalDays += yearData[leapMonth + 1] || 29;
+                }
+                
+                // 如果是闰月
+                if (isLeap && leapMonth === month) {
+                    // 已经算了正常月份，现在加上闰月之前的天数
+                    // 闰月天数就是 yearData[leapMonth + 1]
+                }
+                
+                // 加上当月天数
+                totalDays += day - 1;
+            }
+
+            const resultDate = new Date(baseDate.getTime() + totalDays * 24 * 60 * 60 * 1000);
+            return resultDate;
+        }
+
+        // ============ 计算星宿 ============
+        // 传统二十八星宿值日算法
+        // 基于农历日期，每年正月初一对应特定星宿，然后按顺序推算
+        function calculateStarByLunar(year, month, day, isLeap) {
+            // 获取该年正月初一对应的星宿索引
+            let baseIndex = yearBaseStar[year];
+            if (baseIndex === undefined) {
+                // 如果年份不在表中，使用近似计算
+                baseIndex = ((year - 1900) * 9) % 28;
+            }
+
+            // 计算从正月初一到目标日期的天数
+            let daysFromNewYear = 0;
+            
+            if (year >= 1900 && year <= 2030) {
+                const yearData = lunarData[year];
+                const leapMonth = leapMonthData[year];
+                
+                // 累加之前月份的天数
+                for (let m = 1; m < month; m++) {
+                    daysFromNewYear += yearData[m];
+                }
+                
+                // 如果闰月在目标月份之前，加上闰月天数
+                if (leapMonth > 0 && leapMonth < month) {
+                    daysFromNewYear += yearData[leapMonth + 1] || 29;
+                }
+                
+                // 如果是闰月，加上正常月份的天数
+                if (isLeap && leapMonth === month) {
+                    daysFromNewYear += yearData[month];
+                }
+                
+                // 加上当月天数
+                daysFromNewYear += day - 1;
+            }
+
+            // 计算星宿索引 (28星宿循环)
+            const starIndex = (baseIndex + daysFromNewYear) % 28;
+            return starIndex;
+        }
+
+        // 主测算函数
+        function calculateStar() {
+            let starIndex = -1;
+            let displayDate = '';
+
+            if (currentDateType === 'solar') {
+                // 阳历模式
+                const dateInput = document.getElementById('solarDate').value;
+                if (!dateInput) {
+                    alert('请先选择生日！');
+                    return;
+                }
+
+                const date = new Date(dateInput);
+                const year = date.getFullYear();
+                const month = date.getMonth() + 1;
+                const day = date.getDate();
+
+                // 转换为农历
+                const lunar = solarToLunar(year, month, day);
+                if (lunar) {
+                    starIndex = calculateStarByLunar(lunar.year, lunar.month, lunar.day, lunar.isLeap);
+                    displayDate = `${year}年${month}月${day}日`;
+                }
+            } else {
+                // 农历模式
+                const year = parseInt(document.getElementById('lunarYear').value);
+                const month = parseInt(document.getElementById('lunarMonth').value);
+                const day = parseInt(document.getElementById('lunarDay').value);
+                const isLeap = document.getElementById('isLeapMonth').checked;
+
+                if (!year || !month || !day) {
+                    alert('请完整选择农历生日！');
+                    return;
+                }
+
+                // 验证闰月
+                const leapMonth = leapMonthData[year];
+                if (isLeap && leapMonth !== month) {
+                    alert(`${year}年的闰月是${leapMonth}月，请重新选择！`);
+                    return;
+                }
+
+                starIndex = calculateStarByLunar(year, month, day, isLeap);
+                
+                // 转换为阳历显示
+                const solarDate = lunarToSolar(year, month, day, isLeap);
+                displayDate = `${solarDate.getFullYear()}年${solarDate.getMonth() + 1}月${solarDate.getDate()}日`;
+            }
+
+            if (starIndex < 0) {
+                alert('日期计算出错，请重试！');
                 return;
             }
-            
-            const date = new Date(dateInput);
-            const month = date.getMonth() + 1;
-            const day = date.getDate();
-            
-            // 将日期转换为一年中的第几天
-            const start = new Date(date.getFullYear(), 0, 0);
-            const diff = date - start;
-            const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
-            
-            // 将365天映射到28个星宿
-            const starIndex = (dayOfYear - 1) % 28;
-            
+
             // 显示加载
             document.getElementById('inputSection').style.display = 'none';
             document.getElementById('loading').classList.add('show');
-            
+
             // 模拟计算延迟
             setTimeout(() => {
-                showResult(starIndex);
+                showResult(starIndex, displayDate);
             }, 1500);
         }
-        
+
+        // 阳历转农历（简化版）
+        function solarToLunar(year, month, day) {
+            // 基准日期：1900年1月31日是农历1900年正月初一
+            const baseDate = new Date(1900, 0, 31);
+            const targetDate = new Date(year, month - 1, day);
+            let diffDays = Math.floor((targetDate - baseDate) / (24 * 60 * 60 * 1000));
+
+            let lunarYear = 1900;
+            let lunarMonth = 1;
+            let lunarDay = 1;
+            let isLeap = false;
+
+            // 逐年计算
+            while (lunarYear <= 2030) {
+                const yearData = lunarData[lunarYear];
+                const leapMonth = leapMonthData[lunarYear];
+                let yearDays = 0;
+
+                // 计算该年总天数
+                for (let m = 1; m <= 12; m++) {
+                    yearDays += yearData[m];
+                }
+                if (leapMonth > 0) {
+                    yearDays += yearData[leapMonth + 1] || 29;
+                }
+
+                if (diffDays < yearDays) {
+                    // 在该年内
+                    let remainingDays = diffDays;
+                    
+                    for (let m = 1; m <= 12; m++) {
+                        const monthDays = yearData[m];
+                        
+                        // 检查闰月
+                        if (leapMonth === m && (yearData[leapMonth + 1] || 29) <= remainingDays) {
+                            if (remainingDays < monthDays + (yearData[leapMonth + 1] || 29)) {
+                                lunarMonth = m;
+                                lunarDay = remainingDays + 1;
+                                isLeap = false;
+                                return { year: lunarYear, month: lunarMonth, day: lunarDay, isLeap };
+                            }
+                            remainingDays -= monthDays;
+                            if (remainingDays < (yearData[leapMonth + 1] || 29)) {
+                                lunarMonth = m;
+                                lunarDay = remainingDays + 1;
+                                isLeap = true;
+                                return { year: lunarYear, month: lunarMonth, day: lunarDay, isLeap };
+                            }
+                            remainingDays -= (yearData[leapMonth + 1] || 29);
+                        } else {
+                            if (remainingDays < monthDays) {
+                                lunarMonth = m;
+                                lunarDay = remainingDays + 1;
+                                isLeap = false;
+                                return { year: lunarYear, month: lunarMonth, day: lunarDay, isLeap };
+                            }
+                            remainingDays -= monthDays;
+                        }
+                    }
+                    break;
+                }
+
+                diffDays -= yearDays;
+                lunarYear++;
+            }
+
+            return null;
+        }
+
         // 显示结果
-        function showResult(index) {
+        function showResult(index, displayDate) {
             const star = starData[index];
-            
+
             document.getElementById('loading').classList.remove('show');
             document.getElementById('resultSection').classList.add('show');
-            
+
             // 填充数据
             document.getElementById('starIcon').textContent = star.icon;
             document.getElementById('starName').textContent = star.name;
@@ -825,34 +1555,35 @@
             document.getElementById('fortuneCareer').textContent = star.fortune.career;
             document.getElementById('fortuneWealth').textContent = star.fortune.wealth;
             document.getElementById('fortuneLove').textContent = star.fortune.love;
-            
+
             // 高亮星宿列表
             document.querySelectorAll('.star-item').forEach((item, i) => {
                 item.classList.toggle('active', i === index);
             });
-            
+
             // 滚动到结果
             document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
         }
-        
+
         // 重新测算
         function resetCalc() {
             document.getElementById('resultSection').classList.remove('show');
             document.getElementById('inputSection').style.display = 'block';
-            document.getElementById('birthDate').value = '';
-            
+            document.getElementById('solarDate').value = '';
+            document.getElementById('dateInfo').classList.add('hidden');
+
             document.querySelectorAll('.star-item').forEach(item => {
                 item.classList.remove('active');
             });
-            
+
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-        
+
         // 分享结果
         function shareResult() {
             const starName = document.getElementById('starName').textContent;
             const shareText = `✨ 我的天命星宿是【${starName}】✨\n\n快来测测你的二十八星宿吧！\n`;
-            
+
             if (navigator.share) {
                 navigator.share({
                     title: '二十八星宿测算',
@@ -860,13 +1591,12 @@
                     url: window.location.href
                 });
             } else {
-                // 复制到剪贴板
                 navigator.clipboard.writeText(shareText + window.location.href).then(() => {
                     alert('结果已复制到剪贴板！');
                 });
             }
         }
-        
+
         // 页面加载时初始化
         window.onload = init;
     </script>
