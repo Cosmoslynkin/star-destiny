@@ -1229,11 +1229,14 @@
             try {
                 const solar = Solar.fromYmd(solarDate.getFullYear(), solarDate.getMonth() + 1, solarDate.getDate());
                 const lunar = solar.getLunar();
+                // 判断是否为闰月：获取该年闰月，如果当前月份等于闰月月份，则是闰月
+                const leapMonth = lunar.getLeap();
+                const isLeap = (leapMonth === lunar.getMonth());
                 return {
                     year: lunar.getYear(),
                     month: lunar.getMonth(),
                     day: lunar.getDay(),
-                    isLeap: lunar.isLeap()
+                    isLeap: isLeap
                 };
             } catch (e) {
                 console.error('阳历转换错误:', e);
