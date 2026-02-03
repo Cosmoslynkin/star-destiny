@@ -552,10 +552,6 @@
                             <option value="">日期</option>
                         </select>
                     </div>
-                    <div class="leap-month-option">
-                        <input type="checkbox" class="leap-checkbox" id="isLeapMonth">
-                        <label class="leap-label" for="isLeapMonth">闰月</label>
-                    </div>
                 </div>
                 <div class="solar-display" id="solarDisplay">
                     对应阳历：<span id="convertedSolar">--</span>
@@ -1115,25 +1111,26 @@
             // 监听变化更新日期选项
             yearSelect.addEventListener('change', updateLunarDays);
             monthSelect.addEventListener('change', updateLunarDays);
-            document.getElementById('isLeapMonth').addEventListener('change', updateLunarDays);
             
             // 监听变化显示对应阳历
             yearSelect.addEventListener('change', showConvertedSolar);
             monthSelect.addEventListener('change', showConvertedSolar);
             daySelect.addEventListener('change', showConvertedSolar);
-            document.getElementById('isLeapMonth').addEventListener('change', showConvertedSolar);
         }
         
         // 更新农历日期选项
         function updateLunarDays() {
             const year = parseInt(document.getElementById('lunarYear').value);
             const month = parseInt(document.getElementById('lunarMonth').value);
-            const isLeap = document.getElementById('isLeapMonth').checked;
             const daySelect = document.getElementById('lunarDay');
             
             if (!year || !month) {
                 return;
             }
+            
+            // 自动判断是否为闰月：如果该年份有闰月且用户选择了该月份
+            const leapMonth = getLeapMonth(year);
+            const isLeap = (leapMonth === month);
             
             const daysInMonth = getLunarDaysInMonth(year, month, isLeap);
             const currentDay = parseInt(daySelect.value) || 1;
@@ -1271,13 +1268,16 @@
             const year = parseInt(document.getElementById('lunarYear').value);
             const month = parseInt(document.getElementById('lunarMonth').value);
             const day = parseInt(document.getElementById('lunarDay').value);
-            const isLeap = document.getElementById('isLeapMonth').checked;
             const display = document.getElementById('solarDisplay');
             
             if (!year || !month || !day) {
                 display.classList.remove('show');
                 return;
             }
+            
+            // 自动判断是否为闰月
+            const leapMonth = getLeapMonth(year);
+            const isLeap = (leapMonth === month);
             
             const solarDate = lunarToSolar(year, month, day, isLeap);
             if (solarDate) {
@@ -1410,12 +1410,15 @@
                 lunarYear = parseInt(document.getElementById('lunarYear').value);
                 lunarMonth = parseInt(document.getElementById('lunarMonth').value);
                 lunarDay = parseInt(document.getElementById('lunarDay').value);
-                isLeap = document.getElementById('isLeapMonth').checked;
                 
                 if (!lunarYear || !lunarMonth || !lunarDay) {
                     alert('请先选择完整的农历生日！');
                     return;
                 }
+                
+                // 自动判断是否为闰月
+                const leapMonth = getLeapMonth(lunarYear);
+                isLeap = (leapMonth === lunarMonth);
                 
                 const solarDate = lunarToSolar(lunarYear, lunarMonth, lunarDay, isLeap);
                 if (!solarDate) {
@@ -1473,7 +1476,6 @@
             document.getElementById('lunarYear').value = '';
             document.getElementById('lunarMonth').value = '';
             document.getElementById('lunarDay').value = '';
-            document.getElementById('isLeapMonth').checked = false;
             document.getElementById('solarDisplay').classList.remove('show');
             
             document.querySelectorAll('.star-item').forEach(item => {
