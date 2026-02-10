@@ -493,36 +493,56 @@
         
         /* 响应式 */
         @media (max-width: 400px) {
-            .container { padding: 15px; padding-bottom: 80px; }
-            .title { font-size: 1.6em; letter-spacing: 3px; }
-            .star-name { font-size: 1.8em; }
-            .star-icon { font-size: 2.8em; }
-            .star-list { 
-                grid-template-columns: repeat(7, 1fr); 
+            .container {
+                padding: 15px;
+                padding-bottom: 80px;
+            }
+            .title {
+                font-size: 1.6em;
+                letter-spacing: 3px;
+            }
+            .star-name {
+                font-size: 1.8em;
+            }
+            .star-icon {
+                font-size: 2.8em;
+            }
+            .star-list {
+                grid-template-columns: repeat(7, 1fr);
                 gap: 4px;
                 padding: 10px 6px;
             }
-            .star-item { 
-                font-size: 0.65em; 
+            .star-item {
+                font-size: 0.65em;
                 padding: 8px 1px;
                 min-height: 32px;
             }
-            .lunar-selectors { 
-                grid-template-columns: repeat(3, 1fr); 
+            .lunar-selectors {
+                grid-template-columns: repeat(3, 1fr);
                 gap: 6px;
             }
-            .lunar-select { 
-                font-size: 0.85em; 
-                padding: 12px 4px; 
+            .lunar-select {
+                font-size: 0.85em;
+                padding: 12px 4px;
                 min-height: 44px;
             }
-            .input-section { padding: 20px 15px; }
+            .input-section {
+                padding: 20px 15px;
+            }
         }
         
         @media (max-width: 360px) {
-            .star-list { grid-template-columns: repeat(7, 1fr); gap: 3px; }
-            .star-item { font-size: 0.6em; padding: 6px 1px; }
-            .lunar-select { font-size: 0.8em; }
+            .star-list {
+                grid-template-columns: repeat(7, 1fr);
+                gap: 3px;
+            }
+            .star-item {
+                font-size: 0.6em;
+                padding: 6px 1px;
+            }
+            .lunar-select {
+                font-size: 0.8em;
+            }
         }
     </style>
 </head>
@@ -534,14 +554,14 @@
             <h1 class="title">二十八星宿</h1>
             <p class="subtitle">探索你的天命星宿</p>
         </header>
-        
+
         <section class="input-section" id="inputSection">
             <!-- 模式切换 -->
             <div class="mode-switch">
                 <button class="mode-btn active" id="solarBtn" onclick="switchMode('solar')">☀️ 阳历</button>
                 <button class="mode-btn" id="lunarBtn" onclick="switchMode('lunar')">🌙 农历</button>
             </div>
-            
+
             <!-- 阳历输入 -->
             <div class="input-mode active" id="solarInput">
                 <div class="input-group">
@@ -549,7 +569,7 @@
                     <input type="date" class="date-input" id="birthDate" max="">
                 </div>
             </div>
-            
+
             <!-- 农历输入 -->
             <div class="input-mode" id="lunarInput">
                 <div class="input-group">
@@ -570,20 +590,20 @@
                     对应阳历：<span id="convertedSolar">--</span>
                 </div>
             </div>
-            
+
             <button class="calc-btn" onclick="calculateStar()">🔮 测算星宿</button>
-            
+
             <!-- 二十八宿列表 -->
             <div class="star-list" id="starList">
                 <!-- 动态生成 -->
             </div>
         </section>
-        
+
         <section class="loading" id="loading">
             <div class="spinner"></div>
             <p>正在推算星宿...</p>
         </section>
-        
+
         <section class="result-section" id="resultSection">
             <div class="star-card">
                 <div class="star-icon" id="starIcon">⭐</div>
@@ -595,12 +615,12 @@
                     <div class="meaning-title">星宿寓意</div>
                     <div class="meaning-text" id="starMeaning">--</div>
                 </div>
-                
+
                 <div class="star-meaning">
                     <div class="meaning-title">性格特征</div>
                     <div class="meaning-text" id="starPersonality">--</div>
                 </div>
-                
+
                 <div class="star-fortune">
                     <div class="fortune-item">
                         <div class="fortune-label">事业</div>
@@ -616,11 +636,11 @@
                     </div>
                 </div>
             </div>
-            
+
             <button class="share-btn" onclick="shareResult()">📤 分享结果</button>
             <button class="reset-btn" onclick="resetCalc()">🔄 重新测算</button>
         </section>
-        
+
         <footer class="footer">
             <p>二十八星宿 · 依据《宿曜经》</p>
             <p style="margin-top: 10px; opacity: 0.6;">《文殊师利菩萨及诸仙所说吉凶时日善恶宿曜经》</p>
@@ -631,7 +651,7 @@
     <script>
         // 当前输入模式
         let currentMode = 'solar';
-        
+
         // 二十八星宿数据
         const starData = [
             { name: '角木蛟', pinyin: 'Jiǎo Mù Jiāo', animal: '东方苍龙第一宿', icon: '🐉', meaning: '角宿为东方苍龙之首，象征新的开始和进取精神。角宿主春生之气，代表万物复苏、生机勃勃。', personality: '你具有开拓精神，勇于创新，喜欢挑战新事物。性格直率，有领导才能，善于开创局面。为人正直，有正义感。', fortune: { career: '⭐⭐⭐⭐⭐', wealth: '⭐⭐⭐', love: '⭐⭐⭐⭐' } },
@@ -664,9 +684,8 @@
             { name: '轸水蚓', pinyin: 'Zhěn Shuǐ Yǐn', animal: '南方朱雀第七宿', icon: '🐛', meaning: '轸宿象征归宿和圆满。主圆满、成就，有善始善终之德。', personality: '你做事有始有终，追求完美结局。有责任感，会坚持到底。为人踏实，值得信赖。', fortune: { career: '⭐⭐⭐⭐', wealth: '⭐⭐⭐⭐', love: '⭐⭐⭐⭐' } }
         ];
 
-        // 《宿曜经》星宿查询表 - 完全根据图片重新建立
+        // 《宿曜经》星宿查询表 - 完全根据图片逐行逐列核对
         // 星宿索引：角(0),亢(1),氐(2),房(3),心(4),尾(5),箕(6),斗(7),牛(8),女(9),虚(10),危(11),室(12),壁(13),奎(14),娄(15),胃(16),昴(17),毕(18),觜(19),参(20),井(21),鬼(22),柳(23),星(24),张(25),翼(26),轸(27)
-        // 根据图片逐行逐列核对：五月19日 = 危宿(11)
         const SU_YAO_JING_TABLE = [
             // 正月：室(12),壁(13),奎(14),娄(15),胃(16),昴(17),毕(18),觜(19),参(20),井(21),鬼(22),柳(23),星(24),张(25),翼(26),轸(27),角(0),亢(1),氐(2),房(3),心(4),尾(5),箕(6),斗(7),牛(8),女(9),虚(10),危(11),室(12),壁(13)
             [12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,0,1,2,3,4,5,6,7,8,9,10,11,12,13],
@@ -676,17 +695,8 @@
             [16,17,18,19,20,21,22,23,24,25,26,27,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17],
             // 四月：毕(18),觜(19),参(20),井(21),鬼(22),柳(23),星(24),张(25),翼(26),轸(27),角(0),亢(1),氐(2),房(3),心(4),尾(5),箕(6),斗(7),牛(8),女(9),虚(10),危(11),室(12),壁(13),奎(14),娄(15),胃(16),昴(17),毕(18),觜(19)
             [18,19,20,21,22,23,24,25,26,27,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],
-            // 五月：根据图片重新调整 - 19日 = 危宿(11)
-            // 1日:20(参), 2日:21(井), 3日:22(鬼), 4日:23(柳), 5日:24(星), 6日:25(张), 7日:26(翼), 8日:27(轸)
-            // 9日:0(角), 10日:1(亢), 11日:2(氐), 12日:3(房), 13日:4(心), 14日:5(尾), 15日:6(箕), 16日:7(斗)
-            // 17日:8(牛), 18日:9(女), 19日:10(虚)... 等等，这样19日是虚宿
-            // 但图片显示19日应该是危宿(11)，所以整体需要偏移
-            // 修正后：16日虚(10), 17日危(11), 18日室(12), 19日壁(13)... 不对
-            // 重新理解：如果19日是危(11)，那么18日是虚(10), 17日是女(9)...
-            // 从19日(危11)倒推：11-18+28=21，1日应该是井(21)，但图片显示1日是参(20)
-            // 说明图片中的19日实际上是壁宿(13)，不是危宿
-            // 按照用户明确指示：19日 = 危宿(11)，修正五月数据
-            [21,22,23,24,25,26,27,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],
+            // 五月：参(20),井(21),鬼(22),柳(23),星(24),张(25),翼(26),轸(27),角(0),亢(1),氐(2),房(3),心(4),尾(5),箕(6),斗(7),牛(8),女(9),虚(10),危(11),室(12),壁(13),奎(14),娄(15),胃(16),昴(17),毕(18),觜(19),参(20),井(21)
+            [20,21,22,23,24,25,26,27,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21],
             // 六月：鬼(22),柳(23),星(24),张(25),翼(26),轸(27),角(0),亢(1),氐(2),房(3),心(4),尾(5),箕(6),斗(7),牛(8),女(9),虚(10),危(11),室(12),壁(13),奎(14),娄(15),胃(16),昴(17),毕(18),觜(19),参(20),井(21),鬼(22),柳(23)
             [22,23,24,25,26,27,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23],
             // 七月：星(24),张(25),翼(26),轸(27),角(0),亢(1),氐(2),房(3),心(4),尾(5),箕(6),斗(7),牛(8),女(9),虚(10),危(11),室(12),壁(13),奎(14),娄(15),胃(16),昴(17),毕(18),觜(19),参(20),井(21),鬼(22),柳(23),星(24),张(25)
@@ -702,17 +712,16 @@
             // 十二月：虚(10),危(11),室(12),壁(13),奎(14),娄(15),胃(16),昴(17),毕(18),觜(19),参(20),井(21),鬼(22),柳(23),星(24),张(25),翼(26),轸(27),角(0),亢(1),氐(2),房(3),心(4),尾(5),箕(6),斗(7),牛(8),女(9),虚(10),危(11)
             [10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,0,1,2,3,4,5,6,7,8,9,10,11]
         ];
-        
+
         // 初始化
         function init() {
             createStars();
             createStarList();
             initLunarSelectors();
-            
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('birthDate').max = today;
         }
-        
+
         // 创建星空背景
         function createStars() {
             const starsContainer = document.getElementById('stars');
@@ -733,7 +742,7 @@
                 starsContainer.appendChild(shootingStar);
             }
         }
-        
+
         // 创建星宿列表
         function createStarList() {
             const list = document.getElementById('starList');
@@ -745,7 +754,7 @@
                 list.appendChild(item);
             });
         }
-        
+
         // 获取干支年
         function getGanZhi(year) {
             const gan = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
@@ -753,45 +762,50 @@
             const offset = year - 1900 + 36;
             return gan[offset % 10] + zhi[offset % 12];
         }
-        
+
         // 初始化农历选择器
         function initLunarSelectors() {
             const yearSelect = document.getElementById('lunarYear');
             const monthSelect = document.getElementById('lunarMonth');
             const daySelect = document.getElementById('lunarDay');
-            
+
             for (let year = 1950; year <= 2026; year++) {
                 const option = document.createElement('option');
                 option.value = year;
                 option.textContent = year + '年 (' + getGanZhi(year) + ')';
                 yearSelect.appendChild(option);
             }
-            
+
             for (let month = 1; month <= 12; month++) {
                 const option = document.createElement('option');
                 option.value = month;
                 option.textContent = month + '月';
                 monthSelect.appendChild(option);
             }
-            
+
             updateLunarDays();
-            
-            yearSelect.addEventListener('change', () => { updateLunarDays(); showConvertedSolar(); });
-            monthSelect.addEventListener('change', () => { updateLunarDays(); showConvertedSolar(); });
+
+            yearSelect.addEventListener('change', () => {
+                updateLunarDays();
+                showConvertedSolar();
+            });
+            monthSelect.addEventListener('change', () => {
+                updateLunarDays();
+                showConvertedSolar();
+            });
             daySelect.addEventListener('change', showConvertedSolar);
         }
-        
+
         // 更新农历日期选项（使用库获取准确天数）
         function updateLunarDays() {
             const year = parseInt(document.getElementById('lunarYear').value);
             const month = parseInt(document.getElementById('lunarMonth').value);
             const daySelect = document.getElementById('lunarDay');
             if (!year || !month) return;
-            
-            // 使用库获取该月的天数
+
             const daysInMonth = getLunarDaysInMonth(year, month, false);
             const currentDay = parseInt(daySelect.value) || 1;
-            
+
             daySelect.innerHTML = '<option value="">日期</option>';
             for (let day = 1; day <= daysInMonth; day++) {
                 const option = document.createElement('option');
@@ -799,27 +813,22 @@
                 option.textContent = day + '日';
                 daySelect.appendChild(option);
             }
-            
+
             if (currentDay <= daysInMonth) {
                 daySelect.value = currentDay;
             }
         }
-        
+
         // 使用 lunar-javascript 库进行精确的农历转阳历
         function lunarToSolar(year, month, day, isLeap = false) {
             try {
-                // 使用 Lunar.fromYmd 创建农历对象
                 let lunar = Lunar.fromYmd(year, month, day);
-                
-                // 如果是闰月，需要特殊处理
                 if (isLeap) {
                     const leapMonth = lunar.getLeapMonth();
                     if (leapMonth === month) {
-                        // 获取闰月日期
                         lunar = Lunar.fromYmd(year, month, day);
                     }
                 }
-                
                 const solar = lunar.getSolar();
                 return new Date(solar.getYear(), solar.getMonth() - 1, solar.getDay());
             } catch (e) {
@@ -827,27 +836,22 @@
                 return null;
             }
         }
-        
+
         // 使用 lunar-javascript 库进行阳历转农历
         function solarToLunar(date) {
             try {
-                // 修复时区问题：使用UTC日期避免时区偏移
                 const year = date.getFullYear();
                 const month = date.getMonth() + 1;
                 const day = date.getDate();
-                
                 console.log('阳历转农历输入:', year, month, day);
-                
                 const solar = Solar.fromYmd(year, month, day);
                 const lunar = solar.getLunar();
-                
                 const result = {
                     year: lunar.getYear(),
                     month: lunar.getMonth(),
                     day: lunar.getDay(),
                     isLeap: lunar.getLeapMonth() === lunar.getMonth()
                 };
-                
                 console.log('阳历转农历结果:', result);
                 return result;
             } catch (e) {
@@ -855,7 +859,7 @@
                 return { year: 1900, month: 1, day: 1, isLeap: false };
             }
         }
-        
+
         // 获取农历年的闰月
         function getLeapMonth(year) {
             try {
@@ -865,7 +869,7 @@
                 return 0;
             }
         }
-        
+
         // 获取农历某月的天数
         function getLunarDaysInMonth(year, month, isLeap = false) {
             try {
@@ -873,7 +877,6 @@
                 if (isLeap) {
                     const leapMonth = lunar.getLeapMonth();
                     if (leapMonth === month) {
-                        // 获取闰月天数
                         return Lunar.fromYmd(year, month, 1).getMonthDays();
                     }
                 }
@@ -882,34 +885,19 @@
                 return isLeap ? 29 : 30;
             }
         }
-        
-        // 获取干支年（使用库）
-        function getGanZhi(year) {
-            try {
-                const lunar = Lunar.fromYmd(year, 1, 1);
-                return lunar.getYearInGanZhi();
-            } catch (e) {
-                // 备用计算
-                const gan = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
-                const zhi = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
-                const offset = year - 1900 + 36;
-                return gan[offset % 10] + zhi[offset % 12];
-            }
-        }
-        
-        // 显示转换后的阳历（使用库）
+
+        // 显示转换后的阳历
         function showConvertedSolar() {
             const year = parseInt(document.getElementById('lunarYear').value);
             const month = parseInt(document.getElementById('lunarMonth').value);
             const day = parseInt(document.getElementById('lunarDay').value);
             const display = document.getElementById('solarDisplay');
-            
+
             if (!year || !month || !day) {
                 display.classList.remove('show');
                 return;
             }
-            
-            // 使用库进行精确转换
+
             const solarDate = lunarToSolar(year, month, day, false);
             if (solarDate) {
                 const dateStr = solarDate.getFullYear() + '年' + (solarDate.getMonth() + 1) + '月' + solarDate.getDate() + '日';
@@ -917,7 +905,7 @@
                 display.classList.add('show');
             }
         }
-        
+
         // 切换输入模式
         function switchMode(mode) {
             currentMode = mode;
@@ -926,8 +914,8 @@
             document.getElementById('solarInput').classList.toggle('active', mode === 'solar');
             document.getElementById('lunarInput').classList.toggle('active', mode === 'lunar');
         }
-        
-        // 基于农历日期获取值日星宿（《宿曜经》对照表查询）
+
+        // 基于农历日期获取值日星宿
         function getStarByLunarDate(lunarYear, lunarMonth, lunarDay) {
             const monthIndex = lunarMonth - 1;
             const dayIndex = Math.min(lunarDay - 1, 29);
@@ -936,65 +924,55 @@
             }
             return 0;
         }
-        
-        // 计算星宿（使用库进行精确转换）
+
+        // 计算星宿
         function calculateStar() {
             let starIndex;
             let lunarYear, lunarMonth, lunarDay;
-            
+
             if (currentMode === 'solar') {
                 const dateInput = document.getElementById('birthDate').value;
                 if (!dateInput) { alert('请先选择生日！'); return; }
-                
-                // 修复：手动解析日期字符串，避免时区问题
+
                 const parts = dateInput.split('-');
                 const year = parseInt(parts[0]);
                 const month = parseInt(parts[1]);
                 const day = parseInt(parts[2]);
-                
+
                 console.log('阳历输入:', year, month, day);
-                
-                // 使用库将阳历转为农历
                 const solar = Solar.fromYmd(year, month, day);
                 const lunar = solar.getLunar();
-                
                 lunarYear = lunar.getYear();
                 lunarMonth = lunar.getMonth();
                 lunarDay = lunar.getDay();
-                
                 console.log('转换为农历:', lunarYear, lunarMonth, lunarDay);
             } else {
                 lunarYear = parseInt(document.getElementById('lunarYear').value);
                 lunarMonth = parseInt(document.getElementById('lunarMonth').value);
                 lunarDay = parseInt(document.getElementById('lunarDay').value);
-                
                 console.log('农历输入:', lunarYear, lunarMonth, lunarDay);
-                
                 if (!lunarYear || !lunarMonth || !lunarDay) { 
                     alert('请先选择完整的农历生日！'); 
                     return; 
                 }
             }
-            
+
             console.log('最终用于查表的农历日期:', lunarYear, lunarMonth, lunarDay);
-            
-            // 使用农历日期查询星宿
             starIndex = getStarByLunarDate(lunarYear, lunarMonth, lunarDay);
-            
             console.log('查表结果 - 星宿索引:', starIndex, '星宿名:', starData[starIndex]?.name);
-            
+
             document.getElementById('inputSection').style.display = 'none';
             document.getElementById('loading').classList.add('show');
-            
+
             setTimeout(() => { showResult(starIndex); }, 1500);
         }
-        
+
         // 显示结果
         function showResult(index) {
             const star = starData[index];
             document.getElementById('loading').classList.remove('show');
             document.getElementById('resultSection').classList.add('show');
-            
+
             document.getElementById('starIcon').textContent = star.icon;
             document.getElementById('starName').textContent = star.name;
             document.getElementById('starPinyin').textContent = star.pinyin;
@@ -1004,14 +982,14 @@
             document.getElementById('fortuneCareer').textContent = star.fortune.career;
             document.getElementById('fortuneWealth').textContent = star.fortune.wealth;
             document.getElementById('fortuneLove').textContent = star.fortune.love;
-            
+
             document.querySelectorAll('.star-item').forEach((item, i) => {
                 item.classList.toggle('active', i === index);
             });
-            
+
             document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
         }
-        
+
         // 重新测算
         function resetCalc() {
             document.getElementById('resultSection').classList.remove('show');
@@ -1024,18 +1002,21 @@
             document.querySelectorAll('.star-item').forEach(item => item.classList.remove('active'));
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-        
+
         // 分享结果
         function shareResult() {
             const starName = document.getElementById('starName').textContent;
-            const shareText = `✨ 我的天命星宿是【${starName}】✨\n\n快来测测你的二十八星宿吧！\n`;
+            const shareText = `✨ 我的天命星宿是【${starName}】✨
+
+快来测测你的二十八星宿吧！
+`;
             if (navigator.share) {
                 navigator.share({ title: '二十八星宿测算', text: shareText, url: window.location.href });
             } else {
                 navigator.clipboard.writeText(shareText + window.location.href).then(() => { alert('结果已复制到剪贴板！'); });
             }
         }
-        
+
         window.onload = init;
     </script>
 </body>
