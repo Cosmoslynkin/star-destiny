@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>✨ 二十八星宿测算 ✨</title>
+    <title>✨ 二十八星宿测算 | 28 Lunar Mansions ✨</title>
     <script src="https://cdn.jsdelivr.net/npm/lunar-javascript/lunar.min.js?v=2"></script>
     <style>
         * {
@@ -78,10 +78,45 @@
             padding-bottom: 100px;
         }
         
+        /* 顶部栏 */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+        }
+        
+        /* 语言切换按钮 */
+        .lang-switch {
+            display: flex;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 4px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+        
+        .lang-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 16px;
+            background: transparent;
+            color: #888;
+            font-size: 0.85em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .lang-btn.active {
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            color: #1a1a3e;
+            font-weight: bold;
+        }
+        
         /* 标题 */
         .header {
             text-align: center;
-            padding: 30px 0;
+            padding: 20px 0;
         }
         
         .title {
@@ -94,6 +129,13 @@
             text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
             margin-bottom: 10px;
             letter-spacing: 8px;
+        }
+        
+        .title-en {
+            font-size: 1.4em;
+            color: #ffd700;
+            margin-bottom: 10px;
+            letter-spacing: 4px;
         }
         
         .subtitle {
@@ -300,16 +342,24 @@
             font-size: 2.5em;
             font-weight: bold;
             color: #ffd700;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             position: relative;
             z-index: 1;
             text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
         }
         
+        .star-name-en {
+            font-size: 1.1em;
+            color: #aaa;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+        
         .star-pinyin {
             color: #888;
             font-size: 0.9em;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             position: relative;
             z-index: 1;
         }
@@ -449,7 +499,7 @@
             to { transform: rotate(360deg); }
         }
         
-        /* 二十八星宿列表 */
+        /* 二十八宿列表 */
         .star-list {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -493,36 +543,59 @@
         
         /* 响应式 */
         @media (max-width: 400px) {
-            .container { padding: 15px; padding-bottom: 80px; }
-            .title { font-size: 1.6em; letter-spacing: 3px; }
-            .star-name { font-size: 1.8em; }
-            .star-icon { font-size: 2.8em; }
-            .star-list { 
-                grid-template-columns: repeat(7, 1fr); 
+            .container {
+                padding: 15px;
+                padding-bottom: 80px;
+            }
+            .title {
+                font-size: 1.6em;
+                letter-spacing: 3px;
+            }
+            .title-en {
+                font-size: 1.1em;
+            }
+            .star-name {
+                font-size: 1.8em;
+            }
+            .star-icon {
+                font-size: 2.8em;
+            }
+            .star-list {
+                grid-template-columns: repeat(7, 1fr);
                 gap: 4px;
                 padding: 10px 6px;
             }
-            .star-item { 
-                font-size: 0.65em; 
+            .star-item {
+                font-size: 0.65em;
                 padding: 8px 1px;
                 min-height: 32px;
             }
-            .lunar-selectors { 
-                grid-template-columns: repeat(3, 1fr); 
+            .lunar-selectors {
+                grid-template-columns: repeat(3, 1fr);
                 gap: 6px;
             }
-            .lunar-select { 
-                font-size: 0.85em; 
-                padding: 12px 4px; 
+            .lunar-select {
+                font-size: 0.85em;
+                padding: 12px 4px;
                 min-height: 44px;
             }
-            .input-section { padding: 20px 15px; }
+            .input-section {
+                padding: 20px 15px;
+            }
         }
         
         @media (max-width: 360px) {
-            .star-list { grid-template-columns: repeat(7, 1fr); gap: 3px; }
-            .star-item { font-size: 0.6em; padding: 6px 1px; }
-            .lunar-select { font-size: 0.8em; }
+            .star-list {
+                grid-template-columns: repeat(7, 1fr);
+                gap: 3px;
+            }
+            .star-item {
+                font-size: 0.6em;
+                padding: 6px 1px;
+            }
+            .lunar-select {
+                font-size: 0.8em;
+            }
         }
     </style>
 </head>
@@ -530,189 +603,417 @@
     <div class="stars" id="stars"></div>
     
     <div class="container">
-        <header class="header">
-            <h1 class="title">二十八星宿</h1>
-            <p class="subtitle">探索你的天命星宿</p>
-        </header>
+        <!-- 语言切换 -->
+        <div class="top-bar">
+            <div></div>
+            <div class="lang-switch">
+                <button class="lang-btn active" data-lang="zh" onclick="switchLanguage('zh')">中文</button>
+                <button class="lang-btn" data-lang="en" onclick="switchLanguage('en')">English</button>
+            </div>
+        </div>
         
+        <header class="header">
+            <h1 class="title" data-i18n="title">二十八星宿</h1>
+            <p class="title-en" data-i18n="titleEn">28 Lunar Mansions</p>
+            <p class="subtitle" data-i18n="subtitle">探索你的天命星宿 · Discover Your Destiny Star</p>
+        </header>
+
         <section class="input-section" id="inputSection">
             <!-- 模式切换 -->
             <div class="mode-switch">
-                <button class="mode-btn active" id="solarBtn" onclick="switchMode('solar')">☀️ 阳历</button>
-                <button class="mode-btn" id="lunarBtn" onclick="switchMode('lunar')">🌙 农历</button>
+                <button class="mode-btn active" id="solarBtn" onclick="switchMode('solar')">☀️ <span data-i18n="solar">阳历</span></button>
+                <button class="mode-btn" id="lunarBtn" onclick="switchMode('lunar')">🌙 <span data-i18n="lunar">农历</span></button>
             </div>
-            
+
             <!-- 阳历输入 -->
             <div class="input-mode active" id="solarInput">
                 <div class="input-group">
-                    <label class="input-label">✨ 选择你的阳历生日</label>
+                    <label class="input-label" data-i18n="selectSolar">✨ 选择你的阳历生日</label>
                     <input type="date" class="date-input" id="birthDate" max="">
                 </div>
             </div>
-            
+
             <!-- 农历输入 -->
             <div class="input-mode" id="lunarInput">
                 <div class="input-group">
-                    <label class="input-label">🌙 选择你的农历生日</label>
+                    <label class="input-label" data-i18n="selectLunar">🌙 选择你的农历生日</label>
                     <div class="lunar-selectors">
                         <select class="lunar-select" id="lunarYear">
-                            <option value="">年份</option>
+                            <option value="" data-i18n="year">年份</option>
                         </select>
                         <select class="lunar-select" id="lunarMonth">
-                            <option value="">月份</option>
+                            <option value="" data-i18n="month">月份</option>
                         </select>
                         <select class="lunar-select" id="lunarDay">
-                            <option value="">日期</option>
+                            <option value="" data-i18n="day">日期</option>
                         </select>
                     </div>
                 </div>
                 <div class="solar-display" id="solarDisplay">
-                    对应阳历：<span id="convertedSolar">--</span>
+                    <span data-i18n="solarDate">对应阳历</span>：<span id="convertedSolar">--</span>
                 </div>
             </div>
-            
-            <button class="calc-btn" onclick="calculateStar()">🔮 测算星宿</button>
-            
+
+            <button class="calc-btn" onclick="calculateStar()">
+                <span data-i18n="calculate">🔮 测算星宿</span>
+            </button>
+
             <!-- 二十八宿列表 -->
             <div class="star-list" id="starList">
                 <!-- 动态生成 -->
             </div>
         </section>
-        
+
         <section class="loading" id="loading">
             <div class="spinner"></div>
-            <p>正在推算星宿...</p>
+            <p data-i18n="calculating">正在推算星宿...</p>
         </section>
-        
+
         <section class="result-section" id="resultSection">
             <div class="star-card">
                 <div class="star-icon" id="starIcon">⭐</div>
                 <div class="star-name" id="starName">--</div>
+                <div class="star-name-en" id="starNameEn">--</div>
                 <div class="star-pinyin" id="starPinyin">--</div>
                 <div class="star-animal" id="starAnimal">--</div>
                 
                 <div class="star-meaning">
-                    <div class="meaning-title">星宿寓意</div>
+                    <div class="meaning-title" data-i18n="meaningTitle">星宿寓意</div>
                     <div class="meaning-text" id="starMeaning">--</div>
                 </div>
-                
+
                 <div class="star-meaning">
-                    <div class="meaning-title">性格特征</div>
+                    <div class="meaning-title" data-i18n="personalityTitle">性格特征</div>
                     <div class="meaning-text" id="starPersonality">--</div>
                 </div>
-                
+
                 <div class="star-fortune">
                     <div class="fortune-item">
-                        <div class="fortune-label">事业</div>
+                        <div class="fortune-label" data-i18n="career">事业</div>
                         <div class="fortune-value" id="fortuneCareer">⭐⭐⭐⭐</div>
                     </div>
                     <div class="fortune-item">
-                        <div class="fortune-label">财运</div>
+                        <div class="fortune-label" data-i18n="wealth">财运</div>
                         <div class="fortune-value" id="fortuneWealth">⭐⭐⭐</div>
                     </div>
                     <div class="fortune-item">
-                        <div class="fortune-label">姻缘</div>
+                        <div class="fortune-label" data-i18n="love">姻缘</div>
                         <div class="fortune-value" id="fortuneLove">⭐⭐⭐⭐⭐</div>
                     </div>
                 </div>
             </div>
-            
-            <button class="share-btn" onclick="shareResult()">📤 分享结果</button>
-            <button class="reset-btn" onclick="resetCalc()">🔄 重新测算</button>
+
+            <button class="share-btn" onclick="shareResult()">
+                <span data-i18n="share">📤 分享结果</span>
+            </button>
+            <button class="reset-btn" onclick="resetCalc()">
+                <span data-i18n="reset">🔄 重新测算</span>
+            </button>
         </section>
-        
+
         <footer class="footer">
-            <p>二十八星宿 · 依据《宿曜经》</p>
-            <p style="margin-top: 10px; opacity: 0.6;">《文殊师利菩萨及诸仙所说吉凶时日善恶宿曜经》</p>
-            <p style="margin-top: 5px; opacity: 0.4; font-size: 0.75em;">v1.0.0</p>
+            <p data-i18n="footer">二十八星宿 · 28 Lunar Mansions</p>
+            <p style="margin-top: 10px; opacity: 0.6;" data-i18n="source">《宿曜经》· Xiuyao Sutra</p>
+            <p style="margin-top: 5px; opacity: 0.4; font-size: 0.75em;">v3.0.0 (Bilingual Edition)</p>
         </footer>
     </div>
 
     <script>
-        // 当前输入模式
+        // 当前语言和模式
+        let currentLang = 'zh';
         let currentMode = 'solar';
-        
-        // 二十八星宿数据
+
+        // 多语言翻译
+        const i18n = {
+            zh: {
+                title: '二十八星宿',
+                titleEn: '28 Lunar Mansions',
+                subtitle: '探索你的天命星宿 · Discover Your Destiny Star',
+                solar: '阳历',
+                lunar: '农历',
+                selectSolar: '✨ 选择你的阳历生日',
+                selectLunar: '🌙 选择你的农历生日',
+                year: '年份',
+                month: '月份',
+                day: '日期',
+                solarDate: '对应阳历',
+                calculate: '🔮 测算星宿',
+                calculating: '正在推算星宿...',
+                meaningTitle: '星宿寓意',
+                personalityTitle: '性格特征',
+                career: '事业',
+                wealth: '财运',
+                love: '姻缘',
+                share: '📤 分享结果',
+                reset: '🔄 重新测算',
+                footer: '二十八星宿 · 28 Lunar Mansions',
+                source: '《宿曜经》· Xiuyao Sutra',
+                shareText: '✨ 我的天命星宿是【{star}】✨\n\n快来测测你的二十八星宿吧！',
+                alertSelectDate: '请先选择生日！',
+                alertSelectLunar: '请先选择完整的农历生日！',
+                copied: '结果已复制到剪贴板！'
+            },
+            en: {
+                title: '二十八星宿',
+                titleEn: '28 Lunar Mansions',
+                subtitle: 'Discover Your Destiny Star · 探索你的天命星宿',
+                solar: 'Solar',
+                lunar: 'Lunar',
+                selectSolar: '✨ Select Your Solar Birthday',
+                selectLunar: '🌙 Select Your Lunar Birthday',
+                year: 'Year',
+                month: 'Month',
+                day: 'Day',
+                solarDate: 'Solar Date',
+                calculate: '🔮 Calculate Star',
+                calculating: 'Calculating your destiny star...',
+                meaningTitle: 'Star Meaning',
+                personalityTitle: 'Personality Traits',
+                career: 'Career',
+                wealth: 'Wealth',
+                love: 'Love',
+                share: '📤 Share Result',
+                reset: '🔄 Recalculate',
+                footer: '28 Lunar Mansions · 二十八星宿',
+                source: 'Xiuyao Sutra · 《宿曜经》',
+                shareText: '✨ My Destiny Star is 【{star}】✨\n\nDiscover your 28 Lunar Mansions!',
+                alertSelectDate: 'Please select your birthday first!',
+                alertSelectLunar: 'Please select complete lunar birthday!',
+                copied: 'Result copied to clipboard!'
+            }
+        };
+
+        // 二十八星宿数据（双语）
         const starData = [
-            { name: '角木蛟', pinyin: 'Jiǎo Mù Jiāo', animal: '东方苍龙第一宿', icon: '🐉', meaning: '角宿为东方苍龙之首，象征新的开始和进取精神。角宿主春生之气，代表万物复苏、生机勃勃。', personality: '你具有开拓精神，勇于创新，喜欢挑战新事物。性格直率，有领导才能，善于开创局面。为人正直，有正义感。', fortune: { career: '⭐⭐⭐⭐⭐', wealth: '⭐⭐⭐', love: '⭐⭐⭐⭐' } },
-            { name: '亢金龙', pinyin: 'Kàng Jīn Lóng', animal: '东方苍龙第二宿', icon: '🐲', meaning: '亢宿象征龙的咽喉，主威严和权势。代表刚强、坚毅的品质，有护佑之力。', personality: '你性格刚强，意志坚定，不轻易放弃。有责任感，重情义，对朋友忠诚。做事有魄力，但有时会过于固执。', fortune: { career: '⭐⭐⭐⭐', wealth: '⭐⭐⭐⭐', love: '⭐⭐⭐' } },
-            { name: '氐土貉', pinyin: 'Dī Tǔ Hé', animal: '东方苍龙第三宿', icon: '🦡', meaning: '氐宿为龙胸，象征根基和稳重。主安定、踏实，有守成之能。', personality: '你性格稳重踏实，做事有条理。重视家庭，有理财头脑。为人诚实可靠，是值得信赖的朋友。', fortune: { career: '⭐⭐⭐', wealth: '⭐⭐⭐⭐⭐', love: '⭐⭐⭐⭐' } },
-            { name: '房日兔', pinyin: 'Fáng Rì Tù', animal: '东方苍龙第四宿', icon: '🐰', meaning: '房宿为龙腹，象征丰饶和美好。主吉祥、幸福，代表温柔和善良。', personality: '你性格温和，心地善良，有同情心。善于与人相处，人缘好。追求美好事物，有艺术天赋。', fortune: { career: '⭐⭐⭐', wealth: '⭐⭐⭐', love: '⭐⭐⭐⭐⭐' } },
-            { name: '心月狐', pinyin: 'Xīn Yuè Hú', animal: '东方苍龙第五宿', icon: '🦊', meaning: '心宿为龙心，象征智慧和灵性。主聪慧、机敏，有洞察人心之能。', personality: '你聪明机智，反应敏捷，善于察言观色。有魅力，异性缘好。但有时会情绪化，需要学会控制情感。', fortune: { career: '⭐⭐⭐⭐', wealth: '⭐⭐⭐⭐', love: '⭐⭐⭐⭐⭐' } },
-            { name: '尾火虎', pinyin: 'Wěi Huǒ Hǔ', animal: '东方苍龙第六宿', icon: '🐅', meaning: '尾宿为龙尾，象征力量和威严。主勇猛、果断，有冲锋陷阵之勇。', personality: '你性格豪爽，有冒险精神，敢于拼搏。为人仗义，路见不平会拔刀相助。脾气直率，说话直接。', fortune: { career: '⭐⭐⭐⭐⭐', wealth: '⭐⭐⭐', love: '⭐⭐⭐' } },
-            { name: '箕水豹', pinyin: 'Jī Shuǐ Bào', animal: '东方苍龙第七宿', icon: '🐆', meaning: '箕宿为龙尾所化之风，象征灵动和变化。主智慧、变通，有化险为夷之能。', personality: '你机智灵活，善于随机应变。适应能力强，能在困境中找到出路。多才多艺，兴趣广泛。', fortune: { career: '⭐⭐⭐⭐', wealth: '⭐⭐⭐⭐', love: '⭐⭐⭐⭐' } },
-            { name: '斗木獬', pinyin: 'Dǒu Mù Xiè', animal: '北方玄武第一宿', icon: '🦌', meaning: '斗宿为北斗之形，象征权威和指引。主智慧、领导力，有明辨是非之能。', personality: '你有领导才能，善于组织协调。为人正直，有原则性。追求公平正义，适合做管理者。', fortune: { career: '⭐⭐⭐⭐⭐', wealth: '⭐⭐⭐', love: '⭐⭐⭐' } },
-            { name: '牛金牛', pinyin: 'Niú Jīn Niú', animal: '北方玄武第二宿', icon: '🐂', meaning: '牛宿象征勤劳和踏实。主勤奋、坚韧，有吃苦耐劳之德。', personality: '你勤劳踏实，做事认真负责。有耐心和毅力，能坚持目标。为人诚恳，重信守诺。', fortune: { career: '⭐⭐⭐', wealth: '⭐⭐⭐⭐', love: '⭐⭐⭐⭐' } },
-            { name: '女土蝠', pinyin: 'Nǚ Tǔ Fú', animal: '北方玄武第三宿', icon: '🦇', meaning: '女宿象征智慧和灵巧。主机敏、聪慧，有巧思妙想之能。', personality: '你心思细腻，观察力敏锐。擅长细节工作，有手工艺天赋。为人温柔，善解人意。', fortune: { career: '⭐⭐⭐', wealth: '⭐⭐⭐', love: '⭐⭐⭐⭐⭐' } },
-            { name: '虚日鼠', pinyin: 'Xū Rì Shǔ', animal: '北方玄武第四宿', icon: '🐭', meaning: '虚宿象征虚空和变化。主机变、灵活，有趋吉避凶之智。', personality: '你聪明灵活，善于把握机会。适应力强，能在变化中求生存。为人谨慎，做事有条理。', fortune: { career: '⭐⭐⭐⭐', wealth: '⭐⭐⭐⭐', love: '⭐⭐⭐' } },
-            { name: '危月燕', pinyin: 'Wēi Yuè Yàn', animal: '北方玄武第五宿', icon: '🐦', meaning: '危宿象征危机和转机。主化险为夷，有逢凶化吉之能。', personality: '你性格独立，有冒险精神。能在危机中保持冷静，找到出路。为人机警，善于自我保护。', fortune: { career: '⭐⭐⭐', wealth: '⭐⭐⭐⭐⭐', love: '⭐⭐⭐' } },
-            { name: '室火猪', pinyin: 'Shì Huǒ Zhū', animal: '北方玄武第六宿', icon: '🐷', meaning: '室宿象征房屋和安定。主安定、守护，有家宅平安之福。', personality: '你重视家庭，有守护家人的责任感。做事稳重，追求安定。为人宽厚，有包容心。', fortune: { career: '⭐⭐⭐', wealth: '⭐⭐⭐⭐', love: '⭐⭐⭐⭐⭐' } },
-            { name: '壁水貐', pinyin: 'Bì Shuǐ Yǔ', animal: '北方玄武第七宿', icon: '🏺', meaning: '壁宿象征屏障和保护。主防御、守护，有避邪护身之能。', personality: '你性格谨慎，善于防范风险。有保护欲，会照顾身边人。做事细致，追求完美。', fortune: { career: '⭐⭐⭐', wealth: '⭐⭐⭐⭐', love: '⭐⭐⭐⭐' } },
-            { name: '奎木狼', pinyin: 'Kuí Mù Láng', animal: '西方白虎第一宿', icon: '🐺', meaning: '奎宿象征文采和智慧。主文运、才华，有文章盖世之才。', personality: '你有文艺天赋，善于表达。喜欢学习，知识面广。为人温和，有书卷气。', fortune: { career: '⭐⭐⭐⭐', wealth: '⭐⭐⭐', love: '⭐⭐⭐⭐' } },
-            { name: '娄金狗', pinyin: 'Lóu Jīn Gǒu', animal: '西方白虎第二宿', icon: '🐕', meaning: '娄宿象征忠诚和守信。主诚信、忠实，有守护之德。', personality: '你忠诚可靠，重情义。对朋友真诚，会伸出援手。做事有始有终，值得信赖。', fortune: { career: '⭐⭐⭐⭐', wealth: '⭐⭐⭐⭐', love: '⭐⭐⭐⭐' } },
-            { name: '胃土雉', pinyin: 'Wèi Tǔ Zhì', animal: '西方白虎第三宿', icon: '🦚', meaning: '胃宿象征富足和收藏。主财运、积蓄，有衣食无忧之福。', personality: '你有理财头脑，善于积累财富。做事务实，不浮夸。为人大方，乐于助人。', fortune: { career: '⭐⭐⭐', wealth: '⭐⭐⭐⭐⭐', love: '⭐⭐⭐' } },
-            { name: '昴日鸡', pinyin: 'Mǎo Rì Jī', animal: '西方白虎第四宿', icon: '🐓', meaning: '昴宿象征光明和希望。主光明磊落，有前程似锦之象。', personality: '你性格光明正大，不拘小节。有进取心，追求卓越。为人热心，喜欢帮助他人。', fortune: { career: '⭐⭐⭐⭐⭐', wealth: '⭐⭐⭐⭐', love: '⭐⭐⭐' } },
-            { name: '毕月乌', pinyin: 'Bì Yuè Wū', animal: '西方白虎第五宿', icon: '🐦‍⬛', meaning: '毕宿象征完成和圆满。主圆满、成就，有成功之象。', personality: '你做事有始有终，追求完美。有毅力能坚持，不达目的不罢休。为人认真，一丝不苟。', fortune: { career: '⭐⭐⭐⭐', wealth: '⭐⭐⭐⭐', love: '⭐⭐⭐⭐' } },
-            { name: '觜火猴', pinyin: 'Zī Huǒ Hóu', animal: '西方白虎第六宿', icon: '🐒', meaning: '觜宿象征机敏和灵巧。主机智、灵活，有随机应变之能。', personality: '你聪明机灵，反应快。善于交际，人缘好。多才多艺，兴趣广泛。', fortune: { career: '⭐⭐⭐⭐', wealth: '⭐⭐⭐', love: '⭐⭐⭐⭐⭐' } },
-            { name: '参水猿', pinyin: 'Shēn Shuǐ Yuán', animal: '西方白虎第七宿', icon: '🦧', meaning: '参宿象征成熟和丰收。主成就、收获，有大器晚成之象。', personality: '你成熟稳重，有远见。做事有计划，步步为营。为人谦虚，不张扬。', fortune: { career: '⭐⭐⭐⭐', wealth: '⭐⭐⭐⭐', love: '⭐⭐⭐⭐' } },
-            { name: '井木犴', pinyin: 'Jǐng Mù Àn', animal: '南方朱雀第一宿', icon: '🦁', meaning: '井宿象征水源和滋养。主润泽、养育，有源源不断之福。', personality: '你有包容心，善于照顾他人。有创造力，思维活跃。为人慷慨，乐于分享。', fortune: { career: '⭐⭐⭐⭐', wealth: '⭐⭐⭐⭐⭐', love: '⭐⭐⭐⭐' } },
-            { name: '鬼金羊', pinyin: 'Guǐ Jīn Yáng', animal: '南方朱雀第二宿', icon: '🐑', meaning: '鬼宿象征神秘和直觉。主灵性、直觉，有超凡感知之能。', personality: '你直觉敏锐，有第六感。善于观察，能看透人心。为人神秘，有独特魅力。', fortune: { career: '⭐⭐⭐', wealth: '⭐⭐⭐', love: '⭐⭐⭐⭐⭐' } },
-            { name: '柳土獐', pinyin: 'Liǔ Tǔ Zhāng', animal: '南方朱雀第三宿', icon: '🦌', meaning: '柳宿象征柔韧和适应。主适应、变通，有百折不挠之德。', personality: '你性格温和，善于适应环境。有韧性，遇到困难不退缩。为人随和，容易相处。', fortune: { career: '⭐⭐⭐⭐', wealth: '⭐⭐⭐', love: '⭐⭐⭐⭐' } },
-            { name: '星日马', pinyin: 'Xīng Rì Mǎ', animal: '南方朱雀第四宿', icon: '🐴', meaning: '星宿象征光明和希望。主前程、发展，有前途无量之象。', personality: '你充满活力，有进取心。喜欢自由，不喜欢束缚。为人乐观，充满正能量。', fortune: { career: '⭐⭐⭐⭐⭐', wealth: '⭐⭐⭐⭐', love: '⭐⭐⭐' } },
-            { name: '张月鹿', pinyin: 'Zhāng Yuè Lù', animal: '南方朱雀第五宿', icon: '🦌', meaning: '张宿象征展开和发展。主扩张、发展，有蒸蒸日上之势。', personality: '你有开拓精神，善于扩展事业。有领导才能，能带领团队。为人大气，有格局。', fortune: { career: '⭐⭐⭐⭐⭐', wealth: '⭐⭐⭐⭐', love: '⭐⭐⭐⭐' } },
-            { name: '翼火蛇', pinyin: 'Yì Huǒ Shé', animal: '南方朱雀第六宿', icon: '🐍', meaning: '翼宿象征飞翔和自由。主自由、变化，有无拘无束之态。', personality: '你热爱自由，不喜欢被束缚。思维活跃，创意多。为人独立，有自己的想法。', fortune: { career: '⭐⭐⭐⭐', wealth: '⭐⭐⭐', love: '⭐⭐⭐⭐⭐' } },
-            { name: '轸水蚓', pinyin: 'Zhěn Shuǐ Yǐn', animal: '南方朱雀第七宿', icon: '🐛', meaning: '轸宿象征归宿和圆满。主圆满、成就，有善始善终之德。', personality: '你做事有始有终，追求完美结局。有责任感，会坚持到底。为人踏实，值得信赖。', fortune: { career: '⭐⭐⭐⭐', wealth: '⭐⭐⭐⭐', love: '⭐⭐⭐⭐' } }
+            { 
+                name: '角木蛟', nameEn: 'Horn (Jiao)', pinyin: 'Jiǎo Mù Jiāo', animal: '东方苍龙第一宿', animalEn: '1st of Azure Dragon',
+                icon: '🐉', 
+                meaning: { zh: '角宿为东方苍龙之首，象征新的开始和进取精神。角宿主春生之气，代表万物复苏、生机勃勃。', en: 'The Horn is the head of the Azure Dragon, symbolizing new beginnings and enterprising spirit. It governs the energy of spring, representing revival and vitality.' },
+                personality: { zh: '你具有开拓精神，勇于创新，喜欢挑战新事物。性格直率，有领导才能，善于开创局面。为人正直，有正义感。', en: 'You are pioneering, innovative, and enjoy challenging new things. You are straightforward, have leadership skills, and excel at creating opportunities. You are upright and have a sense of justice.' },
+                fortune: { career: '⭐⭐⭐⭐⭐', wealth: '⭐⭐⭐', love: '⭐⭐⭐⭐' }
+            },
+            { 
+                name: '亢金龙', nameEn: 'Neck (Kang)', pinyin: 'Kàng Jīn Lóng', animal: '东方苍龙第二宿', animalEn: '2nd of Azure Dragon',
+                icon: '🐲', 
+                meaning: { zh: '亢宿象征龙的咽喉，主威严和权势。代表刚强、坚毅的品质，有护佑之力。', en: 'The Neck symbolizes the throat of the dragon, governing dignity and power. It represents strength, perseverance, and protective energy.' },
+                personality: { zh: '你性格刚强，意志坚定，不轻易放弃。有责任感，重情义，对朋友忠诚。做事有魄力，但有时会过于固执。', en: 'You are strong-willed and determined, never giving up easily. You have a sense of responsibility, value relationships, and are loyal to friends. You are courageous, though sometimes stubborn.' },
+                fortune: { career: '⭐⭐⭐⭐', wealth: '⭐⭐⭐⭐', love: '⭐⭐⭐' }
+            },
+            { 
+                name: '氐土貉', nameEn: 'Root (Di)', pinyin: 'Dī Tǔ Hé', animal: '东方苍龙第三宿', animalEn: '3rd of Azure Dragon',
+                icon: '🦡', 
+                meaning: { zh: '氐宿为龙胸，象征根基和稳重。主安定、踏实，有守成之能。', en: 'The Root represents the chest of the dragon, symbolizing foundation and stability. It governs peace, steadiness, and preservation.' },
+                personality: { zh: '你性格稳重踏实，做事有条理。重视家庭，有理财头脑。为人诚实可靠，是值得信赖的朋友。', en: 'You are steady and methodical. You value family and have financial acumen. You are honest, reliable, and a trustworthy friend.' },
+                fortune: { career: '⭐⭐⭐', wealth: '⭐⭐⭐⭐⭐', love: '⭐⭐⭐⭐' }
+            },
+            { 
+                name: '房日兔', nameEn: 'Room (Fang)', pinyin: 'Fáng Rì Tù', animal: '东方苍龙第四宿', animalEn: '4th of Azure Dragon',
+                icon: '🐰', 
+                meaning: { zh: '房宿为龙腹，象征丰饶和美好。主吉祥、幸福，代表温柔和善良。', en: 'The Room represents the belly of the dragon, symbolizing abundance and beauty. It governs auspiciousness, happiness, gentleness, and kindness.' },
+                personality: { zh: '你性格温和，心地善良，有同情心。善于与人相处，人缘好。追求美好事物，有艺术天赋。', en: 'You are gentle, kind-hearted, and compassionate. You get along well with others and are popular. You pursue beauty and have artistic talent.' },
+                fortune: { career: '⭐⭐⭐', wealth: '⭐⭐⭐', love: '⭐⭐⭐⭐⭐' }
+            },
+            { 
+                name: '心月狐', nameEn: 'Heart (Xin)', pinyin: 'Xīn Yuè Hú', animal: '东方苍龙第五宿', animalEn: '5th of Azure Dragon',
+                icon: '🦊', 
+                meaning: { zh: '心宿为龙心，象征智慧和灵性。主聪慧、机敏，有洞察人心之能。', en: 'The Heart represents the heart of the dragon, symbolizing wisdom and spirituality. It governs intelligence, keenness, and insight into human nature.' },
+                personality: { zh: '你聪明机智，反应敏捷，善于察言观色。有魅力，异性缘好。但有时会情绪化，需要学会控制情感。', en: 'You are clever, quick-witted, and good at reading people. You are charming and popular with the opposite sex, though sometimes emotional.' },
+                fortune: { career: '⭐⭐⭐⭐', wealth: '⭐⭐⭐⭐', love: '⭐⭐⭐⭐⭐' }
+            },
+            { 
+                name: '尾火虎', nameEn: 'Tail (Wei)', pinyin: 'Wěi Huǒ Hǔ', animal: '东方苍龙第六宿', animalEn: '6th of Azure Dragon',
+                icon: '🐅', 
+                meaning: { zh: '尾宿为龙尾，象征力量和威严。主勇猛、果断，有冲锋陷阵之勇。', en: 'The Tail represents the tail of the dragon, symbolizing strength and majesty. It governs courage, decisiveness, and the bravery to charge forward.' },
+                personality: { zh: '你性格豪爽，有冒险精神，敢于拼搏。为人仗义，路见不平会拔刀相助。脾气直率，说话直接。', en: 'You are bold, adventurous, and daring. You are righteous and stand up for others. You are straightforward in temperament and speech.' },
+                fortune: { career: '⭐⭐⭐⭐⭐', wealth: '⭐⭐⭐', love: '⭐⭐⭐' }
+            },
+            { 
+                name: '箕水豹', nameEn: 'Winnowing Basket (Ji)', pinyin: 'Jī Shuǐ Bào', animal: '东方苍龙第七宿', animalEn: '7th of Azure Dragon',
+                icon: '🐆', 
+                meaning: { zh: '箕宿为龙尾所化之风，象征灵动和变化。主智慧、变通，有化险为夷之能。', en: 'The Winnowing Basket represents the wind from the dragon\'s tail, symbolizing agility and change. It governs wisdom, adaptability, and the ability to turn danger into safety.' },
+                personality: { zh: '你机智灵活，善于随机应变。适应能力强，能在困境中找到出路。多才多艺，兴趣广泛。', en: 'You are resourceful, adaptable, and good at finding solutions in difficult situations. You are versatile with diverse interests.' },
+                fortune: { career: '⭐⭐⭐⭐', wealth: '⭐⭐⭐⭐', love: '⭐⭐⭐⭐' }
+            },
+            { 
+                name: '斗木獬', nameEn: 'Dipper (Dou)', pinyin: 'Dǒu Mù Xiè', animal: '北方玄武第一宿', animalEn: '1st of Black Tortoise',
+                icon: '🦌', 
+                meaning: { zh: '斗宿为北斗之形，象征权威和指引。主智慧、领导力，有明辨是非之能。', en: 'The Dipper represents the Big Dipper, symbolizing authority and guidance. It governs wisdom, leadership, and the ability to distinguish right from wrong.' },
+                personality: { zh: '你有领导才能，善于组织协调。为人正直，有原则性。追求公平正义，适合做管理者。', en: 'You have leadership skills and are good at organization. You are upright and principled, pursuing fairness and justice. Suitable for management roles.' },
+                fortune: { career: '⭐⭐⭐⭐⭐', wealth: '⭐⭐⭐', love: '⭐⭐⭐' }
+            },
+            { 
+                name: '牛金牛', nameEn: 'Ox (Niu)', pinyin: 'Niú Jīn Niú', animal: '北方玄武第二宿', animalEn: '2nd of Black Tortoise',
+                icon: '🐂', 
+                meaning: { zh: '牛宿象征勤劳和踏实。主勤奋、坚韧，有吃苦耐劳之德。', en: 'The Ox symbolizes diligence and steadiness. It governs hard work, perseverance, and the virtue of enduring hardship.' },
+                personality: { zh: '你勤劳踏实，做事认真负责。有耐心和毅力，能坚持目标。为人诚恳，重信守诺。', en: 'You are hardworking, conscientious, patient, and persistent. You are sincere and keep your promises.' },
+                fortune: { career: '⭐⭐⭐', wealth: '⭐⭐⭐⭐', love: '⭐⭐⭐⭐' }
+            },
+            { 
+                name: '女土蝠', nameEn: 'Girl (Nü)', pinyin: 'Nǚ Tǔ Fú', animal: '北方玄武第三宿', animalEn: '3rd of Black Tortoise',
+                icon: '🦇', 
+                meaning: { zh: '女宿象征智慧和灵巧。主机敏、聪慧，有巧思妙想之能。', en: 'The Girl symbolizes wisdom and dexterity. It governs cleverness, intelligence, and creative ideas.' },
+                personality: { zh: '你心思细腻，观察力敏锐。擅长细节工作，有手工艺天赋。为人温柔，善解人意。', en: 'You are meticulous with keen observation. You excel at detailed work and have craftsmanship talent. You are gentle and understanding.' },
+                fortune: { career: '⭐⭐⭐', wealth: '⭐⭐⭐', love: '⭐⭐⭐⭐⭐' }
+            },
+            { 
+                name: '虚日鼠', nameEn: 'Emptiness (Xu)', pinyin: 'Xū Rì Shǔ', animal: '北方玄武第四宿', animalEn: '4th of Black Tortoise',
+                icon: '🐭', 
+                meaning: { zh: '虚宿象征虚空和变化。主机变、灵活，有趋吉避凶之智。', en: 'Emptiness symbolizes void and change. It governs adaptability, flexibility, and the wisdom to seek fortune and avoid misfortune.' },
+                personality: { zh: '你聪明灵活，善于把握机会。适应力强，能在变化中求生存。为人谨慎，做事有条理。', en: 'You are clever, flexible, and good at seizing opportunities. You adapt well to change and are cautious and organized.' },
+                fortune: { career: '⭐⭐⭐⭐', wealth: '⭐⭐⭐⭐', love: '⭐⭐⭐' }
+            },
+            { 
+                name: '危月燕', nameEn: 'Rooftop (Wei)', pinyin: 'Wēi Yuè Yàn', animal: '北方玄武第五宿', animalEn: '5th of Black Tortoise',
+                icon: '🐦', 
+                meaning: { zh: '危宿象征危机和转机。主化险为夷，有逢凶化吉之能。', en: 'The Rooftop symbolizes crisis and turning points. It governs turning danger into safety and misfortune into fortune.' },
+                personality: { zh: '你性格独立，有冒险精神。能在危机中保持冷静，找到出路。为人机警，善于自我保护。', en: 'You are independent and adventurous. You stay calm in crises and find solutions. You are vigilant and good at self-protection.' },
+                fortune: { career: '⭐⭐⭐', wealth: '⭐⭐⭐⭐⭐', love: '⭐⭐⭐' }
+            },
+            { 
+                name: '室火猪', nameEn: 'Encampment (Shi)', pinyin: 'Shì Huǒ Zhū', animal: '北方玄武第六宿', animalEn: '6th of Black Tortoise',
+                icon: '🐷', 
+                meaning: { zh: '室宿象征房屋和安定。主安定、守护，有家宅平安之福。', en: 'The Encampment symbolizes housing and stability. It governs peace, protection, and family safety.' },
+                personality: { zh: '你重视家庭，有守护家人的责任感。做事稳重，追求安定。为人宽厚，有包容心。', en: 'You value family and have a sense of responsibility to protect loved ones. You are steady, pursue stability, and are tolerant.' },
+                fortune: { career: '⭐⭐⭐', wealth: '⭐⭐⭐⭐', love: '⭐⭐⭐⭐⭐' }
+            },
+            { 
+                name: '壁水貐', nameEn: 'Wall (Bi)', pinyin: 'Bì Shuǐ Yǔ', animal: '北方玄武第七宿', animalEn: '7th of Black Tortoise',
+                icon: '🏺', 
+                meaning: { zh: '壁宿象征屏障和保护。主防御、守护，有避邪护身之能。', en: 'The Wall symbolizes barriers and protection. It governs defense, guardianship, and warding off evil.' },
+                personality: { zh: '你性格谨慎，善于防范风险。有保护欲，会照顾身边人。做事细致，追求完美。', en: 'You are cautious and good at preventing risks. You are protective of those around you, meticulous, and perfectionist.' },
+                fortune: { career: '⭐⭐⭐', wealth: '⭐⭐⭐⭐', love: '⭐⭐⭐⭐' }
+            },
+            { 
+                name: '奎木狼', nameEn: 'Legs (Kui)', pinyin: 'Kuí Mù Láng', animal: '西方白虎第一宿', animalEn: '1st of White Tiger',
+                icon: '🐺', 
+                meaning: { zh: '奎宿象征文采和智慧。主文运、才华，有文章盖世之才。', en: 'The Legs symbolize literary talent and wisdom. It governs literary fortune and talent for writing.' },
+                personality: { zh: '你有文艺天赋，善于表达。喜欢学习，知识面广。为人温和，有书卷气。', en: 'You have artistic talent and are good at expression. You enjoy learning and have broad knowledge. You are gentle and scholarly.' },
+                fortune: { career: '⭐⭐⭐⭐', wealth: '⭐⭐⭐', love: '⭐⭐⭐⭐' }
+            },
+            { 
+                name: '娄金狗', nameEn: 'Bond (Lou)', pinyin: 'Lóu Jīn Gǒu', animal: '西方白虎第二宿', animalEn: '2nd of White Tiger',
+                icon: '🐕', 
+                meaning: { zh: '娄宿象征忠诚和守信。主诚信、忠实，有守护之德。', en: 'The Bond symbolizes loyalty and trustworthiness. It governs integrity, faithfulness, and protective virtue.' },
+                personality: { zh: '你忠诚可靠，重情义。对朋友真诚，会伸出援手。做事有始有终，值得信赖。', en: 'You are loyal, reliable, and value relationships. You are sincere to friends and helpful. You finish what you start and are trustworthy.' },
+                fortune: { career: '⭐⭐⭐⭐', wealth: '⭐⭐⭐⭐', love: '⭐⭐⭐⭐' }
+            },
+            { 
+                name: '胃土雉', nameEn: 'Stomach (Wei)', pinyin: 'Wèi Tǔ Zhì', animal: '西方白虎第三宿', animalEn: '3rd of White Tiger',
+                icon: '🦚', 
+                meaning: { zh: '胃宿象征富足和收藏。主财运、积蓄，有衣食无忧之福。', en: 'The Stomach symbolizes abundance and storage. It governs wealth, savings, and freedom from material want.' },
+                personality: { zh: '你有理财头脑，善于积累财富。做事务实，不浮夸。为人大方，乐于助人。', en: 'You have financial acumen and are good at accumulating wealth. You are practical, not flashy, generous, and helpful.' },
+                fortune: { career: '⭐⭐⭐', wealth: '⭐⭐⭐⭐⭐', love: '⭐⭐⭐' }
+            },
+            { 
+                name: '昴日鸡', nameEn: 'Hairy Head (Mao)', pinyin: 'Mǎo Rì Jī', animal: '西方白虎第四宿', animalEn: '4th of White Tiger',
+                icon: '🐓', 
+                meaning: { zh: '昴宿象征光明和希望。主光明磊落，有前程似锦之象。', en: 'The Hairy Head symbolizes brightness and hope. It governs openness and a bright future.' },
+                personality: { zh: '你性格光明正大，不拘小节。有进取心，追求卓越。为人热心，喜欢帮助他人。', en: 'You are open-minded and not petty. You are ambitious and pursue excellence. You are enthusiastic and helpful.' },
+                fortune: { career: '⭐⭐⭐⭐⭐', wealth: '⭐⭐⭐⭐', love: '⭐⭐⭐' }
+            },
+            { 
+                name: '毕月乌', nameEn: 'Net (Bi)', pinyin: 'Bì Yuè Wū', animal: '西方白虎第五宿', animalEn: '5th of White Tiger',
+                icon: '🐦‍⬛', 
+                meaning: { zh: '毕宿象征完成和圆满。主圆满、成就，有成功之象。', en: 'The Net symbolizes completion and fulfillment. It governs accomplishment and success.' },
+                personality: { zh: '你做事有始有终，追求完美。有毅力能坚持，不达目的不罢休。为人认真，一丝不苟。', en: 'You finish what you start and pursue perfection. You are persistent and don\'t give up until you reach your goal. You are serious and meticulous.' },
+                fortune: { career: '⭐⭐⭐⭐', wealth: '⭐⭐⭐⭐', love: '⭐⭐⭐⭐' }
+            },
+            { 
+                name: '觜火猴', nameEn: 'Turtle Beak (Zi)', pinyin: 'Zī Huǒ Hóu', animal: '西方白虎第六宿', animalEn: '6th of White Tiger',
+                icon: '🐒', 
+                meaning: { zh: '觜宿象征机敏和灵巧。主机智、灵活，有随机应变之能。', en: 'The Turtle Beak symbolizes cleverness and dexterity. It governs wit, flexibility, and adaptability.' },
+                personality: { zh: '你聪明机灵，反应快。善于交际，人缘好。多才多艺，兴趣广泛。', en: 'You are clever, quick-witted, and good at socializing. You are popular, versatile, and have diverse interests.' },
+                fortune: { career: '⭐⭐⭐⭐', wealth: '⭐⭐⭐', love: '⭐⭐⭐⭐⭐' }
+            },
+            { 
+                name: '参水猿', nameEn: 'Three Stars (Shen)', pinyin: 'Shēn Shuǐ Yuán', animal: '西方白虎第七宿', animalEn: '7th of White Tiger',
+                icon: '🦧', 
+                meaning: { zh: '参宿象征成熟和丰收。主成就、收获，有大器晚成之象。', en: 'The Three Stars symbolize maturity and harvest. It governs achievement and late-blooming success.' },
+                personality: { zh: '你成熟稳重，有远见。做事有计划，步步为营。为人谦虚，不张扬。', en: 'You are mature, steady, and farsighted. You plan carefully and advance step by step. You are humble and unassuming.' },
+                fortune: { career: '⭐⭐⭐⭐', wealth: '⭐⭐⭐⭐', love: '⭐⭐⭐⭐' }
+            },
+            { 
+                name: '井木犴', nameEn: 'Well (Jing)', pinyin: 'Jǐng Mù Àn', animal: '南方朱雀第一宿', animalEn: '1st of Vermilion Bird',
+                icon: '🦁', 
+                meaning: { zh: '井宿象征水源和滋养。主润泽、养育，有源源不断之福。', en: 'The Well symbolizes water sources and nourishment. It governs nurturing and endless blessings.' },
+                personality: { zh: '你有包容心，善于照顾他人。有创造力，思维活跃。为人慷慨，乐于分享。', en: 'You are inclusive and good at caring for others. You are creative and active-minded. You are generous and enjoy sharing.' },
+                fortune: { career: '⭐⭐⭐⭐', wealth: '⭐⭐⭐⭐⭐', love: '⭐⭐⭐⭐' }
+            },
+            { 
+                name: '鬼金羊', nameEn: 'Ghost (Gui)', pinyin: 'Guǐ Jīn Yáng', animal: '南方朱雀第二宿', animalEn: '2nd of Vermilion Bird',
+                icon: '🐑', 
+                meaning: { zh: '鬼宿象征神秘和直觉。主灵性、直觉，有超凡感知之能。', en: 'The Ghost symbolizes mystery and intuition. It governs spirituality, intuition, and extraordinary perception.' },
+                personality: { zh: '你直觉敏锐，有第六感。善于观察，能看透人心。为人神秘，有独特魅力。', en: 'You have keen intuition and a sixth sense. You are observant and can see through people. You are mysterious with unique charm.' },
+                fortune: { career: '⭐⭐⭐', wealth: '⭐⭐⭐', love: '⭐⭐⭐⭐⭐' }
+            },
+            { 
+                name: '柳土獐', nameEn: 'Willow (Liu)', pinyin: 'Liǔ Tǔ Zhāng', animal: '南方朱雀第三宿', animalEn: '3rd of Vermilion Bird',
+                icon: '🦌', 
+                meaning: { zh: '柳宿象征柔韧和适应。主适应、变通，有百折不挠之德。', en: 'The Willow symbolizes flexibility and adaptability. It governs resilience and the virtue of perseverance.' },
+                personality: { zh: '你性格温和，善于适应环境。有韧性，遇到困难不退缩。为人随和，容易相处。', en: 'You are gentle and adaptable. You are resilient and don\'t retreat from difficulties. You are easy-going and approachable.' },
+                fortune: { career: '⭐⭐⭐⭐', wealth: '⭐⭐⭐', love: '⭐⭐⭐⭐' }
+            },
+            { 
+                name: '星日马', nameEn: 'Star (Xing)', pinyin: 'Xīng Rì Mǎ', animal: '南方朱雀第四宿', animalEn: '4th of Vermilion Bird',
+                icon: '🐴', 
+                meaning: { zh: '星宿象征光明和希望。主前程、发展，有前途无量之象。', en: 'The Star symbolizes brightness and hope. It governs future prospects and development with unlimited potential.' },
+                personality: { zh: '你充满活力，有进取心。喜欢自由，不喜欢束缚。为人乐观，充满正能量。', en: 'You are energetic and ambitious. You love freedom and dislike constraints. You are optimistic and full of positive energy.' },
+                fortune: { career: '⭐⭐⭐⭐⭐', wealth: '⭐⭐⭐⭐', love: '⭐⭐⭐' }
+            },
+            { 
+                name: '张月鹿', nameEn: 'Extended Net (Zhang)', pinyin: 'Zhāng Yuè Lù', animal: '南方朱雀第五宿', animalEn: '5th of Vermilion Bird',
+                icon: '🦌', 
+                meaning: { zh: '张宿象征展开和发展。主扩张、发展，有蒸蒸日上之势。', en: 'The Extended Net symbolizes expansion and development. It governs growth and thriving momentum.' },
+                personality: { zh: '你有开拓精神，善于扩展事业。有领导才能，能带领团队。为人大气，有格局。', en: 'You are pioneering and good at expanding business. You have leadership skills and can guide teams. You are magnanimous with great vision.' },
+                fortune: { career: '⭐⭐⭐⭐⭐', wealth: '⭐⭐⭐⭐', love: '⭐⭐⭐⭐' }
+            },
+            { 
+                name: '翼火蛇', nameEn: 'Wings (Yi)', pinyin: 'Yì Huǒ Shé', animal: '南方朱雀第六宿', animalEn: '6th of Vermilion Bird',
+                icon: '🐍', 
+                meaning: { zh: '翼宿象征飞翔和自由。主自由、变化，有无拘无束之态。', en: 'The Wings symbolize flight and freedom. They govern liberty, change, and an unrestrained nature.' },
+                personality: { zh: '你热爱自由，不喜欢被束缚。思维活跃，创意多。为人独立，有自己的想法。', en: 'You love freedom and dislike being constrained. You are creative with an active mind. You are independent with your own ideas.' },
+                fortune: { career: '⭐⭐⭐⭐', wealth: '⭐⭐⭐', love: '⭐⭐⭐⭐⭐' }
+            },
+            { 
+                name: '轸水蚓', nameEn: 'Chariot (Zhen)', pinyin: 'Zhěn Shuǐ Yǐn', animal: '南方朱雀第七宿', animalEn: '7th of Vermilion Bird',
+                icon: '🐛', 
+                meaning: { zh: '轸宿象征归宿和圆满。主圆满、成就，有善始善终之德。', en: 'The Chariot symbolizes return and fulfillment. It governs completion and the virtue of finishing well what was started well.' },
+                personality: { zh: '你做事有始有终，追求完美结局。有责任感，会坚持到底。为人踏实，值得信赖。', en: 'You finish what you start, pursuing perfect endings. You have a sense of responsibility and persist to the end. You are dependable and trustworthy.' },
+                fortune: { career: '⭐⭐⭐⭐', wealth: '⭐⭐⭐⭐', love: '⭐⭐⭐⭐' }
+            }
         ];
 
-        // 《宿曜经》星宿查询表 - 完全根据图片重新建立
-        // 星宿索引：角(0),亢(1),氐(2),房(3),心(4),尾(5),箕(6),斗(7),牛(8),女(9),虚(10),危(11),室(12),壁(13),奎(14),娄(15),胃(16),昴(17),毕(18),觜(19),参(20),井(21),鬼(22),柳(23),星(24),张(25),翼(26),轸(27)
-        // 根据图片逐行逐列核对：五月19日 = 危宿(11)
-        const SU_YAO_JING_TABLE = [
-            // 正月：室(12),壁(13),奎(14),娄(15),胃(16),昴(17),毕(18),觜(19),参(20),井(21),鬼(22),柳(23),星(24),张(25),翼(26),轸(27),角(0),亢(1),氐(2),房(3),心(4),尾(5),箕(6),斗(7),牛(8),女(9),虚(10),危(11),室(12),壁(13)
-            [12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,0,1,2,3,4,5,6,7,8,9,10,11,12,13],
-            // 二月：奎(14),娄(15),胃(16),昴(17),毕(18),觜(19),参(20),井(21),鬼(22),柳(23),星(24),张(25),翼(26),轸(27),角(0),亢(1),氐(2),房(3),心(4),尾(5),箕(6),斗(7),牛(8),女(9),虚(10),危(11),室(12),壁(13),奎(14),娄(15)
-            [14,15,16,17,18,19,20,21,22,23,24,25,26,27,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],
-            // 三月：胃(16),昴(17),毕(18),觜(19),参(20),井(21),鬼(22),柳(23),星(24),张(25),翼(26),轸(27),角(0),亢(1),氐(2),房(3),心(4),尾(5),箕(6),斗(7),牛(8),女(9),虚(10),危(11),室(12),壁(13),奎(14),娄(15),胃(16),昴(17)
-            [16,17,18,19,20,21,22,23,24,25,26,27,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17],
-            // 四月：毕(18),觜(19),参(20),井(21),鬼(22),柳(23),星(24),张(25),翼(26),轸(27),角(0),亢(1),氐(2),房(3),心(4),尾(5),箕(6),斗(7),牛(8),女(9),虚(10),危(11),室(12),壁(13),奎(14),娄(15),胃(16),昴(17),毕(18),觜(19)
-            [18,19,20,21,22,23,24,25,26,27,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],
-            // 五月：根据图片重新调整 - 19日 = 危宿(11)
-            // 1日:20(参), 2日:21(井), 3日:22(鬼), 4日:23(柳), 5日:24(星), 6日:25(张), 7日:26(翼), 8日:27(轸)
-            // 9日:0(角), 10日:1(亢), 11日:2(氐), 12日:3(房), 13日:4(心), 14日:5(尾), 15日:6(箕), 16日:7(斗)
-            // 17日:8(牛), 18日:9(女), 19日:10(虚)... 等等，这样19日是虚宿
-            // 但图片显示19日应该是危宿(11)，所以整体需要偏移
-            // 修正后：16日虚(10), 17日危(11), 18日室(12), 19日壁(13)... 不对
-            // 重新理解：如果19日是危(11)，那么18日是虚(10), 17日是女(9)...
-            // 从19日(危11)倒推：11-18+28=21，1日应该是井(21)，但图片显示1日是参(20)
-            // 说明图片中的19日实际上是壁宿(13)，不是危宿
-            // 按照用户明确指示：19日 = 危宿(11)，修正五月数据
-            [21,22,23,24,25,26,27,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],
-            // 六月：鬼(22),柳(23),星(24),张(25),翼(26),轸(27),角(0),亢(1),氐(2),房(3),心(4),尾(5),箕(6),斗(7),牛(8),女(9),虚(10),危(11),室(12),壁(13),奎(14),娄(15),胃(16),昴(17),毕(18),觜(19),参(20),井(21),鬼(22),柳(23)
-            [22,23,24,25,26,27,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23],
-            // 七月：星(24),张(25),翼(26),轸(27),角(0),亢(1),氐(2),房(3),心(4),尾(5),箕(6),斗(7),牛(8),女(9),虚(10),危(11),室(12),壁(13),奎(14),娄(15),胃(16),昴(17),毕(18),觜(19),参(20),井(21),鬼(22),柳(23),星(24),张(25)
-            [24,25,26,27,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25],
-            // 八月：角(0),亢(1),氐(2),房(3),心(4),尾(5),箕(6),斗(7),牛(8),女(9),虚(10),危(11),室(12),壁(13),奎(14),娄(15),胃(16),昴(17),毕(18),觜(19),参(20),井(21),鬼(22),柳(23),星(24),张(25),翼(26),轸(27),角(0),亢(1)
-            [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,0,1],
-            // 九月：氐(2),房(3),心(4),尾(5),箕(6),斗(7),牛(8),女(9),虚(10),危(11),室(12),壁(13),奎(14),娄(15),胃(16),昴(17),毕(18),觜(19),参(20),井(21),鬼(22),柳(23),星(24),张(25),翼(26),轸(27),角(0),亢(1),氐(2),房(3)
-            [2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,0,1,2,3],
-            // 十月：尾(5),箕(6),斗(7),牛(8),女(9),虚(10),危(11),室(12),壁(13),奎(14),娄(15),胃(16),昴(17),毕(18),觜(19),参(20),井(21),鬼(22),柳(23),星(24),张(25),翼(26),轸(27),角(0),亢(1),氐(2),房(3),心(4),尾(5),箕(6)
-            [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,0,1,2,3,4,5,6],
-            // 十一月：斗(7),牛(8),女(9),虚(10),危(11),室(12),壁(13),奎(14),娄(15),胃(16),昴(17),毕(18),觜(19),参(20),井(21),鬼(22),柳(23),星(24),张(25),翼(26),轸(27),角(0),亢(1),氐(2),房(3),心(4),尾(5),箕(6),斗(7),牛(8)
-            [7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,0,1,2,3,4,5,6,7,8],
-            // 十二月：虚(10),危(11),室(12),壁(13),奎(14),娄(15),胃(16),昴(17),毕(18),觜(19),参(20),井(21),鬼(22),柳(23),星(24),张(25),翼(26),轸(27),角(0),亢(1),氐(2),房(3),心(4),尾(5),箕(6),斗(7),牛(8),女(9),虚(10),危(11)
-            [10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,0,1,2,3,4,5,6,7,8,9,10,11]
-        ];
-        
         // 初始化
         function init() {
             createStars();
             createStarList();
             initLunarSelectors();
-            
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('birthDate').max = today;
+            updateLanguage();
         }
-        
+
+        // 切换语言
+        function switchLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+            updateLanguage();
+        }
+
+        // 更新界面语言
+        function updateLanguage() {
+            const t = i18n[currentLang];
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.dataset.i18n;
+                if (t[key]) {
+                    el.textContent = t[key];
+                }
+            });
+            document.title = currentLang === 'zh' ? '✨ 二十八星宿测算 ✨' : '✨ 28 Lunar Mansions ✨';
+        }
+
         // 创建星空背景
         function createStars() {
             const starsContainer = document.getElementById('stars');
@@ -733,7 +1034,7 @@
                 starsContainer.appendChild(shootingStar);
             }
         }
-        
+
         // 创建星宿列表
         function createStarList() {
             const list = document.getElementById('starList');
@@ -745,7 +1046,7 @@
                 list.appendChild(item);
             });
         }
-        
+
         // 获取干支年
         function getGanZhi(year) {
             const gan = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
@@ -753,73 +1054,73 @@
             const offset = year - 1900 + 36;
             return gan[offset % 10] + zhi[offset % 12];
         }
-        
+
         // 初始化农历选择器
         function initLunarSelectors() {
             const yearSelect = document.getElementById('lunarYear');
             const monthSelect = document.getElementById('lunarMonth');
             const daySelect = document.getElementById('lunarDay');
-            
+
             for (let year = 1950; year <= 2026; year++) {
                 const option = document.createElement('option');
                 option.value = year;
                 option.textContent = year + '年 (' + getGanZhi(year) + ')';
                 yearSelect.appendChild(option);
             }
-            
+
             for (let month = 1; month <= 12; month++) {
                 const option = document.createElement('option');
                 option.value = month;
                 option.textContent = month + '月';
                 monthSelect.appendChild(option);
             }
-            
+
             updateLunarDays();
-            
-            yearSelect.addEventListener('change', () => { updateLunarDays(); showConvertedSolar(); });
-            monthSelect.addEventListener('change', () => { updateLunarDays(); showConvertedSolar(); });
+
+            yearSelect.addEventListener('change', () => {
+                updateLunarDays();
+                showConvertedSolar();
+            });
+            monthSelect.addEventListener('change', () => {
+                updateLunarDays();
+                showConvertedSolar();
+            });
             daySelect.addEventListener('change', showConvertedSolar);
         }
-        
-        // 更新农历日期选项（使用库获取准确天数）
+
+        // 更新农历日期选项
         function updateLunarDays() {
             const year = parseInt(document.getElementById('lunarYear').value);
             const month = parseInt(document.getElementById('lunarMonth').value);
             const daySelect = document.getElementById('lunarDay');
             if (!year || !month) return;
-            
-            // 使用库获取该月的天数
+
             const daysInMonth = getLunarDaysInMonth(year, month, false);
             const currentDay = parseInt(daySelect.value) || 1;
-            
-            daySelect.innerHTML = '<option value="">日期</option>';
+
+            daySelect.innerHTML = '<option value="">' + i18n[currentLang].day + '</option>';
             for (let day = 1; day <= daysInMonth; day++) {
                 const option = document.createElement('option');
                 option.value = day;
                 option.textContent = day + '日';
                 daySelect.appendChild(option);
             }
-            
+
             if (currentDay <= daysInMonth) {
                 daySelect.value = currentDay;
             }
         }
-        
+
         // 使用 lunar-javascript 库进行精确的农历转阳历
         function lunarToSolar(year, month, day, isLeap = false) {
             try {
-                // 使用 Lunar.fromYmd 创建农历对象
                 let lunar = Lunar.fromYmd(year, month, day);
-                
-                // 如果是闰月，需要特殊处理
                 if (isLeap) {
                     const leapMonth = lunar.getLeapMonth();
                     if (leapMonth === month) {
-                        // 获取闰月日期
                         lunar = Lunar.fromYmd(year, month, day);
                     }
                 }
-                
                 const solar = lunar.getSolar();
                 return new Date(solar.getYear(), solar.getMonth() - 1, solar.getDay());
             } catch (e) {
@@ -827,35 +1128,27 @@
                 return null;
             }
         }
-        
+
         // 使用 lunar-javascript 库进行阳历转农历
         function solarToLunar(date) {
             try {
-                // 修复时区问题：使用UTC日期避免时区偏移
                 const year = date.getFullYear();
                 const month = date.getMonth() + 1;
                 const day = date.getDate();
-                
-                console.log('阳历转农历输入:', year, month, day);
-                
                 const solar = Solar.fromYmd(year, month, day);
                 const lunar = solar.getLunar();
-                
-                const result = {
+                return {
                     year: lunar.getYear(),
                     month: lunar.getMonth(),
                     day: lunar.getDay(),
                     isLeap: lunar.getLeapMonth() === lunar.getMonth()
                 };
-                
-                console.log('阳历转农历结果:', result);
-                return result;
             } catch (e) {
                 console.error('阳历转换错误:', e);
                 return { year: 1900, month: 1, day: 1, isLeap: false };
             }
         }
-        
+
         // 获取农历年的闰月
         function getLeapMonth(year) {
             try {
@@ -865,7 +1158,7 @@
                 return 0;
             }
         }
-        
+
         // 获取农历某月的天数
         function getLunarDaysInMonth(year, month, isLeap = false) {
             try {
@@ -873,7 +1166,6 @@
                 if (isLeap) {
                     const leapMonth = lunar.getLeapMonth();
                     if (leapMonth === month) {
-                        // 获取闰月天数
                         return Lunar.fromYmd(year, month, 1).getMonthDays();
                     }
                 }
@@ -882,34 +1174,19 @@
                 return isLeap ? 29 : 30;
             }
         }
-        
-        // 获取干支年（使用库）
-        function getGanZhi(year) {
-            try {
-                const lunar = Lunar.fromYmd(year, 1, 1);
-                return lunar.getYearInGanZhi();
-            } catch (e) {
-                // 备用计算
-                const gan = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
-                const zhi = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
-                const offset = year - 1900 + 36;
-                return gan[offset % 10] + zhi[offset % 12];
-            }
-        }
-        
-        // 显示转换后的阳历（使用库）
+
+        // 显示转换后的阳历
         function showConvertedSolar() {
             const year = parseInt(document.getElementById('lunarYear').value);
             const month = parseInt(document.getElementById('lunarMonth').value);
             const day = parseInt(document.getElementById('lunarDay').value);
             const display = document.getElementById('solarDisplay');
-            
+
             if (!year || !month || !day) {
                 display.classList.remove('show');
                 return;
             }
-            
-            // 使用库进行精确转换
+
             const solarDate = lunarToSolar(year, month, day, false);
             if (solarDate) {
                 const dateStr = solarDate.getFullYear() + '年' + (solarDate.getMonth() + 1) + '月' + solarDate.getDate() + '日';
@@ -917,7 +1194,7 @@
                 display.classList.add('show');
             }
         }
-        
+
         // 切换输入模式
         function switchMode(mode) {
             currentMode = mode;
@@ -926,8 +1203,24 @@
             document.getElementById('solarInput').classList.toggle('active', mode === 'solar');
             document.getElementById('lunarInput').classList.toggle('active', mode === 'lunar');
         }
-        
-        // 基于农历日期获取值日星宿（《宿曜经》对照表查询）
+
+        // 《宿曜经》星宿查询表
+        const SU_YAO_JING_TABLE = [
+            [12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,0,1,2,3,4,5,6,7,9,10,11,12,13,14],
+            [14,15,16,17,18,19,20,21,22,23,24,25,26,27,0,1,2,3,4,5,6,7,9,10,11,12,13,14,15,16],
+            [16,17,18,19,20,21,22,23,24,25,26,27,0,1,2,3,4,5,6,7,9,10,11,12,13,14,15,16,17,18],
+            [18,19,20,21,22,23,24,25,26,27,0,1,2,3,4,5,6,7,9,10,11,12,13,14,15,16,17,18,19,20],
+            [20,21,22,23,24,25,26,27,0,1,2,3,4,5,6,7,9,10,11,12,13,14,15,16,17,18,19,20,21,22],
+            [22,23,24,25,26,27,0,1,2,3,4,5,6,7,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24],
+            [25,26,27,0,1,2,3,4,5,6,7,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27],
+            [0,1,2,3,4,5,6,7,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,0,1,2],
+            [2,3,4,5,6,7,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,0,1,2,3,4],
+            [4,5,6,7,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,0,1,2,3,4,5,6],
+            [7,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,0,1,2,3,4,5,6,7,9,10],
+            [10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,0,1,2,3,4,5,6,7,9,10,11,12]
+        ];
+
+        // 基于农历日期获取值日星宿
         function getStarByLunarDate(lunarYear, lunarMonth, lunarDay) {
             const monthIndex = lunarMonth - 1;
             const dayIndex = Math.min(lunarDay - 1, 29);
@@ -936,82 +1229,71 @@
             }
             return 0;
         }
-        
-        // 计算星宿（使用库进行精确转换）
+
+        // 计算星宿
         function calculateStar() {
             let starIndex;
             let lunarYear, lunarMonth, lunarDay;
-            
+            const t = i18n[currentLang];
+
             if (currentMode === 'solar') {
                 const dateInput = document.getElementById('birthDate').value;
-                if (!dateInput) { alert('请先选择生日！'); return; }
-                
-                // 修复：手动解析日期字符串，避免时区问题
+                if (!dateInput) { alert(t.alertSelectDate); return; }
+
                 const parts = dateInput.split('-');
                 const year = parseInt(parts[0]);
                 const month = parseInt(parts[1]);
                 const day = parseInt(parts[2]);
-                
-                console.log('阳历输入:', year, month, day);
-                
-                // 使用库将阳历转为农历
+
                 const solar = Solar.fromYmd(year, month, day);
                 const lunar = solar.getLunar();
-                
                 lunarYear = lunar.getYear();
                 lunarMonth = lunar.getMonth();
                 lunarDay = lunar.getDay();
-                
-                console.log('转换为农历:', lunarYear, lunarMonth, lunarDay);
             } else {
                 lunarYear = parseInt(document.getElementById('lunarYear').value);
                 lunarMonth = parseInt(document.getElementById('lunarMonth').value);
                 lunarDay = parseInt(document.getElementById('lunarDay').value);
-                
-                console.log('农历输入:', lunarYear, lunarMonth, lunarDay);
-                
                 if (!lunarYear || !lunarMonth || !lunarDay) { 
-                    alert('请先选择完整的农历生日！'); 
+                    alert(t.alertSelectLunar); 
                     return; 
                 }
             }
-            
-            console.log('最终用于查表的农历日期:', lunarYear, lunarMonth, lunarDay);
-            
-            // 使用农历日期查询星宿
+
             starIndex = getStarByLunarDate(lunarYear, lunarMonth, lunarDay);
-            
-            console.log('查表结果 - 星宿索引:', starIndex, '星宿名:', starData[starIndex]?.name);
-            
+
             document.getElementById('inputSection').style.display = 'none';
             document.getElementById('loading').classList.add('show');
-            
+
             setTimeout(() => { showResult(starIndex); }, 1500);
         }
-        
+
         // 显示结果
         function showResult(index) {
             const star = starData[index];
+            const t = i18n[currentLang];
+            
             document.getElementById('loading').classList.remove('show');
             document.getElementById('resultSection').classList.add('show');
-            
+
             document.getElementById('starIcon').textContent = star.icon;
             document.getElementById('starName').textContent = star.name;
+            document.getElementById('starNameEn').textContent = star.nameEn;
             document.getElementById('starPinyin').textContent = star.pinyin;
-            document.getElementById('starAnimal').textContent = star.animal;
-            document.getElementById('starMeaning').textContent = star.meaning;
-            document.getElementById('starPersonality').textContent = star.personality;
+            document.getElementById('starAnimal').textContent = currentLang === 'zh' ? star.animal : star.animalEn;
+            document.getElementById('starMeaning').textContent = star.meaning[currentLang];
+            document.getElementById('starPersonality').textContent = star.personality[currentLang];
             document.getElementById('fortuneCareer').textContent = star.fortune.career;
             document.getElementById('fortuneWealth').textContent = star.fortune.wealth;
             document.getElementById('fortuneLove').textContent = star.fortune.love;
-            
+
             document.querySelectorAll('.star-item').forEach((item, i) => {
                 item.classList.toggle('active', i === index);
             });
-            
+
             document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
         }
-        
+
         // 重新测算
         function resetCalc() {
             document.getElementById('resultSection').classList.remove('show');
@@ -1024,18 +1306,21 @@
             document.querySelectorAll('.star-item').forEach(item => item.classList.remove('active'));
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-        
+
         // 分享结果
         function shareResult() {
-            const starName = document.getElementById('starName').textContent;
-            const shareText = `✨ 我的天命星宿是【${starName}】✨\n\n快来测测你的二十八星宿吧！\n`;
+            const star = starData.find(s => s.name === document.getElementById('starName').textContent);
+            const t = i18n[currentLang];
+            const starName = currentLang === 'zh' ? star.name : star.nameEn;
+            const shareText = t.shareText.replace('{star}', starName);
+            
             if (navigator.share) {
-                navigator.share({ title: '二十八星宿测算', text: shareText, url: window.location.href });
+                navigator.share({ title: '二十八星宿测算 | 28 Lunar Mansions', text: shareText, url: window.location.href });
             } else {
-                navigator.clipboard.writeText(shareText + window.location.href).then(() => { alert('结果已复制到剪贴板！'); });
+                navigator.clipboard.writeText(shareText + '\n' + window.location.href).then(() => { alert(t.copied); });
             }
         }
-        
+
         window.onload = init;
     </script>
 </body>
